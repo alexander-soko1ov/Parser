@@ -1,3 +1,9 @@
+import re
+from termcolor import colored, cprint
+import requests
+import datetime
+import time
+
 
 text_0 = "Начать собираться в 4:31"
 text_1 = "Проснуться, улыбнуться, почистить зубы и помыться в 07:13"
@@ -15,7 +21,6 @@ text_12 = 'Служебку подписать на питон в среду'
 text_13 = 'Служебку в отдел кадров в среду в 13:13'
 text_14 = "В понедельник уроки"
 text_15 = 'Поскольку все записи имеют один и тот же шаблон, внести данные, которые хотите извлечь из пары скобок 13 декабря 2022 года в 16:15'
-
 text_16 = "Напомни про гречку через 14 минут"
 text_17 = "Через 50 минут таймер установаить. дерзай"
 text_18 = "Основы_Python_в_четверг_15:00 3 сентября 2022 года"
@@ -37,7 +42,70 @@ text_33 = "Подписать служебку 23 февраля"
 text_34 = "Тренировка каждый понедельник"
 text_35 = "Тренировка каждый год"
 
+
+
 for i in range(36):
-    # print(globals()['text_' + str(i)])
+
+    status = None
+    text = None
+    repeat_always_monday = None
+    day_of_week_monday = None
+    hour = None
+    minute = None
+
     message = globals()[f'text_{i}']
-    print(message)
+    cprint(message, 'green')
+
+    if isinstance(message, str):
+        split_message = list(message.split())
+        for index, element in enumerate(split_message):
+            if (':' in element) and (element.replace(':', '').isdigit()) and (len(element) in [4, 5]):
+                word_before_element = split_message[index - 1]
+                if word_before_element in ['в', 'к']:
+                    element_before_element = word_before_element + " " + element
+                    cprint(element_before_element, 'red')
+                else:
+                    cprint(element, 'red')
+
+
+    # def through_time(min=0, hour=0, day=0):
+    #     # min = 30
+    #     current_date = datetime.datetime.today()
+    #     adding_time = datetime.timedelta(minutes=min, hours=hour, days=day)
+    #     time_to_notice = current_date + adding_time
+    #     datatime = time_to_notice.strftime("%d.%m.%Y (%A) %H:%M")
+    #     return datatime
+    #
+    # if message in ['часа', 'часов']:
+    #     result = through_time(hour=h)
+    # elif message in ['минут', 'минуты']:
+    #     result = through_time(min=m)
+    # elif message in ['день', 'дней']:
+    #     result = through_time(day=d)
+    # elif message in ['лет', 'год']:
+    #     result = through_time(day=365)
+    # else:
+    #     result = through_time()
+    # cprint(result, 'yellow')
+
+
+    if isinstance(message, str):
+        message_split = re.split(' |_', message)
+        # print(message_split)
+        status = "Success"
+    else:
+        status = "Failure"
+
+    for element in message_split:
+        # print(element)
+        if element in ["каждый", "каждую", "каждое"]:
+            repeat_always_monday = 'yes'
+
+        if element in "через":
+            day_of_week_monday = 'yes'
+        if element in "завтра":
+            day_of_week_monday = 'yes'
+
+
+    print("MESSAGE=", {'STATUS': status, 'TEXT': text, 'PARAMS': {'repeat_always': repeat_always_monday, 'day_of_week': day_of_week_monday}, 'DATE': {'hour': hour, 'minute': minute}})
+

@@ -1,46 +1,9 @@
-# import schedule
+import re
 import requests
 import datetime
 import time
 from termcolor import colored, cprint
 
-# def greeting():
-#     todos_dict = {
-#         '8:00': 'Drink coffee',
-#         '11:00': 'Time to work',
-#         '23:59': 'Time to sleep'
-#     }
-#
-#     print("Day's tasks")
-#     for k, v in todos_dict.items():
-#         print(f'{k} - {v}')
-#
-#     response = requests.get(url='https://yobit.net/api/3/ticker/btc_usd')
-#     data = response.json()
-#     btc_price = f"BTC: {round(data.get('btc_usd').get('last'), 2)}$"
-#     print(btc_price)
-
-# def printing():
-#     print("робит")
-#
-# def main():
-#     # greeting()
-
-    # schedule.every(2).seconds.do(printing)
-    # schedule.every(5).minutes.do(greeting)
-
-    # schedule.every().day.at('21:09').do(greeting)
-
-    # schedule.every().thursday.do(greeting)
-    # time = '21:21'
-    # schedule.every().friday.at(time).do(printing)
-
-#     while True:
-#         schedule.run_pending()
-#
-#
-# if __name__ == '__main__':
-#     main()
 
 # start_time = time.time()
 # print(time.time() - start_time)
