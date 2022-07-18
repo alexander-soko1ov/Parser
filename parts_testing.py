@@ -39,20 +39,39 @@ text_34 = "Тренировка каждый понедельник"
 text_35 = "Тренировка каждый день"
 
 for i in range(36):
-    message = globals()[f'text_{i}']
-    print(message)
+    message_space = globals()[f'text_{i}']
+    print(message_space)
 
     status = None
 
     # определение статуса строка или что-то другое, сплит строки по условиям (' ','_')
-    if isinstance(message, str):
+    # if isinstance(message, str):
+    #     message_split = re.split(' |_', message)
+    #     status = "Success"
+    #     print(status)
+    # else:
+    #     status = "Failure"
+    #     cprint(status, 'red')
+    #     continue
+
+    # проверка статуса на условия и сплит строки (проблема с пробелами)
+    if isinstance(message_space, str):
+        message = message_space.lstrip()
         message_split = re.split(' |_', message)
-        status = "Success"
-        print(status)
+        status = None
+        # print(message_split[0])
+
+        for element_status_word in message_split[0]:
+            # cprint(element_status_word, 'red')
+            if element_status_word in ['/', "\\"]:
+                status = "Failure"
+                break
+            elif " " in element_status_word:
+                status = "Success"
+            else:
+                status = "Success"
     else:
         status = "Failure"
-        cprint(status, 'red')
-        continue
 
 
     cprint(message_split, 'green')
@@ -122,5 +141,5 @@ for i in range(36):
     print('Год: ', year)
     print('Время: ', element_time)
     print(result)
-
+    print('\n')
     # text = result.lstrip().capitalize()
