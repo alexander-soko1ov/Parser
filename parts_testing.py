@@ -66,8 +66,17 @@ for i in range(36):
 
     cprint(message_split, 'green')
 
-    # определение года в числовом представлении 2021, 2022 и т.д.
-    dictionary = {
+    # определение года в числовом формате (2021, 2022) и времени в числовом-текстовом формате (90 минут)
+    number = None
+    date_number = None
+    time = None
+    year = None
+    mount = None
+    mask_str_date = None
+    mask_str_time = None
+    element_time = None
+
+    dictionary_month = {
         'января': 'January',
         'февраля': 'February',
         'марта': 'March',
@@ -81,9 +90,37 @@ for i in range(36):
         'ноября': 'November',
         'декабря': 'December'
     }
-    number = None
-    year = None
-    mask_str_date = None
+
+    dictionary_time = {
+        'минут': 1,
+        'минуты': 2,
+        'часа': 3,
+        'часов': 4
+    }
+
+    # for element_1 in message_split:
+    #     if element_1.isdigit():
+    #         if (len(element_1) == 2 or len(element_1) == 1):
+    #             number = element_1
+    #             # print('Число', number)
+    #             index = message_split.index(element_1)
+    #             index_1 = message_split[index+1]
+    #             if index_1 in dictionary_month:
+    #                 mount = dictionary_month[index_1]
+    #                 date_number = number
+    #                 mask_str_date = number + " " + index_1
+    #             elif index_1 in 'число':
+    #                 date_number = number
+    #                 mask_str_date = number + " " + index_1
+    #             elif index_1 in dictionary_time:
+    #                 element_time = number
+    #
+    #
+    #         elif len(element_1) == 4 and element_1 > '2000':
+    #             year = element_1
+    #
+    #         else:
+    #             p = 'ошибка'
 
     for element_1 in message_split:
         if element_1.isdigit():
@@ -91,21 +128,27 @@ for i in range(36):
                 number = element_1
                 # print('Число', number)
                 index = message_split.index(element_1)
-                index_1 = message_split[index+1]
-                if index_1 in dictionary:
-                    mount = dictionary[index_1]
+                index_1 = message_split[index + 1]
+                index_2 = message_split[index - 1]
+                print(index_2)
+                if index_1 in dictionary_month:
+                    mount = dictionary_month[index_1]
+                    date_number = number
                     mask_str_date = number + " " + index_1
                 elif index_1 in 'число':
+                    date_number = number
                     mask_str_date = number + " " + index_1
+                elif index_2 in ['через', 'каждые']:
+                    if index_1 in dictionary_time:
+                        mask_str_time = index_2 + " " + number + " " + index_1
 
             elif len(element_1) == 4 and element_1 > '2000':
                 year = element_1
 
             else:
-                p = 'ошибка'
+                cprint('Нет даты и времени в текстовом формате', 'red')
 
-    mask_str_time = None
-    element_time = None
+
 
     # определение времени в числовом представлении 16:00, 13:23 и т.д.
     for index_time, element_time in enumerate(message_split):
@@ -123,12 +166,16 @@ for i in range(36):
         else:
             element_time = None
 
+
     # вывод результата, пока что в столбик, для наглядности
     result = ' '.join(message_split)
+
     print('Статус: ', status)
-    print('Число: ', mask_str_date)
+    print('Число: ', date_number)
+    print('Месяц: ', mount)
     print('Год: ', year)
-    print('Время: ', element_time)
+    print('Время: ', mask_str_time)
+
     print(result)
     print('\n')
     # text = result.lstrip().capitalize()
