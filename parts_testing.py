@@ -44,16 +44,6 @@ for i in range(36):
 
     status = None
 
-    # определение статуса строка или что-то другое, сплит строки по условиям (' ','_')
-    # if isinstance(message, str):
-    #     message_split = re.split(' |_', message)
-    #     status = "Success"
-    #     print(status)
-    # else:
-    #     status = "Failure"
-    #     cprint(status, 'red')
-    #     continue
-
     # проверка статуса на условия и сплит строки (проблема с пробелами)
     if isinstance(message_space, str):
         message = message_space.lstrip()
