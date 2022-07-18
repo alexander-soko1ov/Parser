@@ -106,8 +106,6 @@ for i in range(36):
         'число': 5
     }
 
-
-
     for element_1 in message_split:
         if element_1.isdigit():
             if (len(element_1) == 2 or len(element_1) == 1):
@@ -182,7 +180,8 @@ for i in range(36):
         replace_time = result.replace(str(mask_str_time), '')
         replace_date = replace_time.replace(str(mask_str_date), '')
         replace_year = replace_date.replace(str(year), '')
+        text = replace_year.capitalize()
 
-        print(replace_year)
+        print(text)
     print('\n')
     # text = result.lstrip().capitalize()
