@@ -44,6 +44,7 @@ for i in range(36):
 
     status = None
 
+
     # проверка статуса на условия и сплит строки (проблема с пробелами)
     if isinstance(message_space, str):
         message = message_space.lstrip()
@@ -64,6 +65,7 @@ for i in range(36):
         status = "Failure"
 
     cprint(message_split, 'green')
+
 
     # определение года в числовом формате (2021, 2022) и времени в числовом-текстовом формате (90 минут)
     number = None
@@ -105,7 +107,7 @@ for i in range(36):
                 index = message_split.index(element_1)
                 index_1 = message_split[index + 1]
                 index_2 = message_split[index - 1]
-                print(index_2)
+                # print(index_2)
                 if index_1 in dictionary_month:
                     mount = dictionary_month[index_1]
                     date_number = number
@@ -113,7 +115,7 @@ for i in range(36):
                 elif index_1 in 'число':
                     date_number = number
                     mask_str_date = number + " " + index_1
-                elif index_2 in ['через', 'каждые']:
+                elif index_2 in ['Через', 'через', 'каждые', 'Каждые']:
                     if index_1 in dictionary_time:
                         mask_str_time = index_2 + " " + number + " " + index_1
 
@@ -122,7 +124,6 @@ for i in range(36):
 
             else:
                 cprint('Нет даты и времени в текстовом формате', 'red')
-
 
 
     # определение времени в числовом представлении 16:00, 13:23 и т.д.
@@ -136,7 +137,7 @@ for i in range(36):
                 mask_str_time = word_before_element + ' ' + element_time
                 # cprint(mask_str_time, 'cyan')
             else:
-                pass
+                mask_str_time = element_time
                 # cprint(element_time, 'magenta')
         else:
             element_time = None
