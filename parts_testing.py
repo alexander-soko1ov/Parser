@@ -63,7 +63,6 @@ for i in range(36):
     else:
         status = "Failure"
 
-
     cprint(message_split, 'green')
 
     # определение года в числовом формате (2021, 2022) и времени в числовом-текстовом формате (90 минут)
@@ -97,30 +96,6 @@ for i in range(36):
         'часа': 3,
         'часов': 4
     }
-
-    # for element_1 in message_split:
-    #     if element_1.isdigit():
-    #         if (len(element_1) == 2 or len(element_1) == 1):
-    #             number = element_1
-    #             # print('Число', number)
-    #             index = message_split.index(element_1)
-    #             index_1 = message_split[index+1]
-    #             if index_1 in dictionary_month:
-    #                 mount = dictionary_month[index_1]
-    #                 date_number = number
-    #                 mask_str_date = number + " " + index_1
-    #             elif index_1 in 'число':
-    #                 date_number = number
-    #                 mask_str_date = number + " " + index_1
-    #             elif index_1 in dictionary_time:
-    #                 element_time = number
-    #
-    #
-    #         elif len(element_1) == 4 and element_1 > '2000':
-    #             year = element_1
-    #
-    #         else:
-    #             p = 'ошибка'
 
     for element_1 in message_split:
         if element_1.isdigit():
