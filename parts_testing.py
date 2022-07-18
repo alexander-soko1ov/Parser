@@ -54,13 +54,19 @@ for i in range(36):
 
         for element_status_word in message_split[0]:
             # cprint(element_status_word, 'red')
-            if element_status_word in ['/', "\\"]:
+            if element_status_word in ['/', '\\', 'd']:
                 status = "Failure"
                 break
             elif " " in element_status_word:
                 status = "Success"
             else:
                 status = "Success"
+
+        # for element_status_str in message_split:
+        #     if element_status_str.isdigit() == True:
+        #         print("")
+
+
     else:
         status = "Failure"
 
@@ -96,7 +102,8 @@ for i in range(36):
         'минут': 1,
         'минуты': 2,
         'часа': 3,
-        'часов': 4
+        'часов': 4,
+        'число': 5
     }
 
     for element_1 in message_split:
@@ -112,18 +119,34 @@ for i in range(36):
                     mount = dictionary_month[index_1]
                     date_number = number
                     mask_str_date = number + " " + index_1
-                elif index_1 in 'число':
-                    date_number = number
-                    mask_str_date = number + " " + index_1
-                elif index_2 in ['Через', 'через', 'каждые', 'Каждые']:
+                    # print(number + " " + index_1)
+                # elif index_1 in 'число':
+                #     date_number = number
+                #     mask_str_date = number + " " + index_1
+                elif index_2 in ['через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое']:
                     if index_1 in dictionary_time:
+                        date_number = number
                         mask_str_time = index_2 + " " + number + " " + index_1
 
-            elif len(element_1) == 4 and element_1 > '2000':
-                year = element_1
+            # elif len(element_1) == 4 and element_1 > '2000':
+            #     year = element_1
+            #     print(index_2)
 
-            else:
-                cprint('Нет даты и времени в текстовом формате', 'red')
+            # else:
+            #     cprint('Нет даты и времени в текстовом формате', 'red')
+
+    for element_year in message_split:
+        # cprint(element_year, 'red')
+        if element_year.isdigit() and len(element_year) == 4 and (2000 <= int(element_year) <= 3000):
+            year = element_year
+            index_element = message_split.index(element_year) + 1
+            # print(index_element)
+            right_element = message_split[index_element]
+            # print(right_element)
+            if right_element in ['год', 'года']:
+                year = element_year + " " + right_element
+                # print(year)
+    # print("год:", year)
 
 
     # определение времени в числовом представлении 16:00, 13:23 и т.д.
@@ -147,11 +170,17 @@ for i in range(36):
     result = ' '.join(message_split)
 
     print('Статус: ', status)
-    print('Число: ', date_number)
-    print('Месяц: ', mount)
-    print('Год: ', year)
-    print('Время: ', mask_str_time)
 
-    print(result)
+
+    if status == "Success":
+        print('Число: ', date_number)
+        print('Месяц: ', mount)
+        print('Год: ', year)
+        print('Время: ', mask_str_time)
+        replace_time = result.replace(str(mask_str_time), '')
+        replace_date = replace_time.replace(str(mask_str_date), '')
+        replace_year = replace_date.replace(str(year), '')
+
+        print(replace_year)
     print('\n')
     # text = result.lstrip().capitalize()
