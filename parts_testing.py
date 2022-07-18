@@ -106,6 +106,8 @@ for i in range(36):
         'число': 5
     }
 
+
+
     for element_1 in message_split:
         if element_1.isdigit():
             if (len(element_1) == 2 or len(element_1) == 1):
@@ -123,7 +125,7 @@ for i in range(36):
                 # elif index_1 in 'число':
                 #     date_number = number
                 #     mask_str_date = number + " " + index_1
-                elif index_2 in ['через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое']:
+                elif index_2 in ['через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое', 'каждый']:
                     if index_1 in dictionary_time:
                         date_number = number
                         mask_str_time = index_2 + " " + number + " " + index_1
