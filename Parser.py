@@ -51,15 +51,15 @@ test_dict = globals()
 
 for i in range(35):
     message = test_dict[f'text_{i}']
-#     if isinstance(message, str):
-#         split_message = list(message.split())
-#         for index, element in enumerate(split_message):
-#             if (':' in element) and (element.replace(':', '').isdigit()) and (len(element) in [4, 5]):
-#                 word_before_element = split_message[index - 1]
-#                 if word_before_element in ['в', 'к']:
-#                     print(word_before_element, element)
-#                 else:
-#                     print(element)
+    if isinstance(message, str):
+        split_message = list(message.split())
+        for index, element in enumerate(split_message):
+            if (':' in element) and (element.replace(':', '').isdigit()) and (len(element) in [4, 5]):
+                word_before_element = split_message[index - 1]
+                if word_before_element in ['в', 'к']:
+                    print(word_before_element, element)
+                else:
+                    print(element)
     cprint(message, 'green')
 
     def through_time(min=0, hour=0, day=0):
