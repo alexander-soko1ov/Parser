@@ -60,7 +60,6 @@ def finding_matches(string_split, dictionary):
                 result = element_dict
     return result
 
-
 for element in string_split:
     element_on_right = None
     if element in ['каждое', 'каждую', 'каждый']:
