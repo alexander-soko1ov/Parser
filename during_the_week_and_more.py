@@ -42,7 +42,6 @@ for element in string_split:
                     index_data_l = element_on_right.index(element_data) - 1
                     index_data_r = element_on_right.index(element_data) + 1
                     if element_on_right[index_data_l].isdigit() and element_on_right[index_data_r].isdigit():
-
                         datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
                         print(element, element_on_right[index_data_l], element_data, element_on_right[index_data_r], datetime_element_on_right)
 
