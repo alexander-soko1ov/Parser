@@ -1,7 +1,7 @@
 import re
 from termcolor import colored, cprint
 
-string = 'каждый год'
+string = 'во вторник'
 
 string_split = string.split()
 print(string_split)
@@ -70,12 +70,6 @@ for element in string_split:
 
         if not element_on_right.isdigit() and not (element_on_right in dictionary_datetime):
             day_of_the_week = finding_matches(string_split, days_of_the_week)
-            # for element_days_of_the_week in days_of_the_week:
-            #     if (element_days_of_the_week[:-1] == element_on_right) or \
-            #             (element_days_of_the_week == element_on_right) \
-            #             or (element_days_of_the_week == element_on_right[:-1]) or \
-            #             (element_days_of_the_week[:-1] == element_on_right[:-1]):
-            #         day_of_the_week = element_days_of_the_week
 
         elif element_on_right.isdigit() and ((len(element_on_right) == 1) or (len(element_on_right) == 2)):
             numbers = element_on_right
@@ -86,12 +80,6 @@ for element in string_split:
                     word_number = month_or_numbers
             else:   # проверка на месяц
                 mount = finding_matches(string_split, dictionary_month)
-                # for element_dictionary_month in dictionary_month:
-                #     if (element_dictionary_month[:-1] == month_or_numbers) or \
-                #             (element_dictionary_month == month_or_numbers) \
-                #             or (element_dictionary_month == month_or_numbers[:-1]) or   \
-                #             (element_dictionary_month[:-1] == month_or_numbers[:-1]):
-                #         mount = element_dictionary_month
 
         elif month_or_numbers in dictionary_month:
             mount = month_or_numbers
@@ -99,22 +87,14 @@ for element in string_split:
         if element_on_right in dictionary_datetime:
             datetime_element_on_right = element_on_right
 
-    elif element in ['в']:
+    elif element in ['в', 'во']:
         index_element = string_split.index(element) + 1
         element_on_right = string_split[index_element]
         each = element
-        for element_days_of_the_week in days_of_the_week:
-            if (element_days_of_the_week[:-1] == element_on_right) or \
-                    (element_days_of_the_week == element_on_right) \
-                    or (element_days_of_the_week == element_on_right[:-1]) or (
-                    element_days_of_the_week[:-1] == element_on_right[:-1]):
-                day_of_the_week = element_days_of_the_week
+        day_of_the_week = finding_matches(string_split, days_of_the_week)
+
     else:
         pass
-
-# print(str(each) + ' ' + str(day_of_the_week))
-# print(str(each) + ' ' + str(numbers) + ' ' + str(word_number))
-# print(str(each) + ' ' + str(numbers) + ' ' + str(mount))
 
 print(each)
 print(word_number)
