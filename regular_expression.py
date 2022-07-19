@@ -18,7 +18,6 @@ text_12 = 'Служебку подписать на питон в среду'
 text_13 = 'Служебку в отдел кадров в среду в 13:13'
 text_14 = "В понедельник уроки"
 text_15 = 'Поскольку все записи имеют один и тот же шаблон, внести данные, которые хотите извлечь из пары скобок 13 декабря 2022 года в 16:15'
-
 text_16 = "Напомни про гречку через 14 минут"
 text_17 = "Через 50 минут таймер установаить. дерзай"
 text_18 = "Основы_Python_в_четверг_15:00 3 сентября 2022 года"
@@ -48,12 +47,10 @@ text_35 = "Тренировка каждый год"
 print("О чем мне вам напомнить?")
 message = input()
 
-
 # text1 = re.findall(r'[а-яА-ЯёЁ]', message)
 # text2 = ' '.join(text1)
 # text3 = re.sub(r'[вВ][\s][0-9]?[0-9][:][0-9][0-9]+', '', text2)
 # text = re.sub(r'завтра|[вВ] понедельник|[вВ][о]? вторник|[вВ] среду|[вВ] четверг|[вВ] пятницу|[вВ] субб?оту|[вВ] воскресенье', '', text3)
-
 
 # print(text)
 
@@ -82,9 +79,6 @@ message = ''.join(message.split(time_str))
 
 print(message)
 
-
-
-
 date = re.findall("[0-9]?[0-9][.,-]?[0-1]?[1-9]?[.,-]?[0-9]?[0-9]?[0-9]?[0-9]?", message)
 date_str = ''.join(date)
 if date_str == '':
@@ -101,19 +95,14 @@ print('DAY: ', day_str)
 
 # print(cprint())
 
-
-
-
 status = None
 repeat_always_monday = None
 day_of_week_monday = None
-
 
 string = message
 for split_word in [day_str, date_str, time_str]:
     string = ' '.join(string.split(split_word))
     string = string.rstrip()
-
 
 if "каждый" or "каждую" or "каждое" in message:
     repeat_always_monday = day_str
