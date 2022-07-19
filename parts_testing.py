@@ -171,6 +171,7 @@ for i in range(36):
             if reс_days in days_of_the_week:
                 print(element_text_data)
                 print(rec_days)
+                # нужно допилить
 
 
 
