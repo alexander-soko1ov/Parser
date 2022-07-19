@@ -66,7 +66,6 @@ for i in range(36):
         #     if element_status_str.isdigit() == True:
         #         print("")
 
-
     else:
         status = "Failure"
 
@@ -82,6 +81,10 @@ for i in range(36):
     mask_str_date = None
     mask_str_time = None
     element_time = None
+    element_text_data = None
+    each_data = None
+    str_each_data = None
+    str_through_data = None
 
     dictionary_month = {
         'января': 1,
@@ -101,13 +104,15 @@ for i in range(36):
     dictionary_time = {
         'минут': 1,
         'минуты': 2,
-        'часа': 3,
-        'часов': 4,
-        'число': 5
+        'час': 3,
+        'часа': 4,
+        'часов': 5,
+        'дней': 6,
+        'дня': 7
     }
 
     recurring_date = {
-        'через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое', 'каждый', 'Каждый',
+        'каждые', 'Каждые', 'каждое', 'Каждое', 'каждый', 'Каждый',
         'каждую', 'Каждую'
     }
 
@@ -125,27 +130,30 @@ for i in range(36):
                 index = message_split.index(element_1)
                 index_1 = message_split[index + 1]
                 index_2 = message_split[index - 1]
+
                 # print(index_2)
                 if index_1 in dictionary_month:
+                    # cprint(index_1, 'magenta')
                     mount = dictionary_month[index_1]
+                    # cprint(mount, 'red')
                     date_number = number
                     mask_str_date = number + " " + index_1
                     # print(number + " " + index_1)
-                # elif index_1 in 'число':
-                #     date_number = number
-                #     mask_str_date = number + " " + index_1
+                elif index_1 in 'число':
+                    date_number = number
+                    if index_2 in recurring_date:
+                        mask_str_date = index_2 + " " + number + " " + index_1
+                    else:
+                        mask_str_date = number + " " + index_1
+                elif index_2 in ['через', 'Через']:
+                    pass
                 elif index_2 in recurring_date:
                     if index_1 in dictionary_time:
-                        date_number = number
+                        time = number
                         mask_str_time = index_2 + " " + number + " " + index_1
 
-            # elif len(element_1) == 4 and element_1 > '2000':
-            #     year = element_1
-            #     print(index_2)
 
-            # else:
-            #     cprint('Нет даты и времени в текстовом формате', 'red')
-
+    # определение года, записанного в цифровом виде / ГОТОВО
     for element_year in message_split:
         # cprint(element_year, 'red')
         if element_year.isdigit() and len(element_year) == 4 and (2000 <= int(element_year) <= 3000):
@@ -158,13 +166,11 @@ for i in range(36):
                 year = element_year + " " + right_element
                 # print(year)
     # print("год:", year)
-    element_text_data = None
-    each_data = None
-    str_each_data = None
 
-    # определение каждый год, каждый день и т.д.
-    # cprint(len(message_split), 'red')
+
+    # определение каждый год, каждый день и т.д. / ГОТОВО
     for element_text_data in message_split:
+
         if element_text_data in recurring_date:
             # cprint(element_text_data, 'magenta')
             index_recurring = message_split.index(element_text_data)
@@ -172,12 +178,16 @@ for i in range(36):
             # cprint(each_data, 'magenta')
             if each_data in days_of_the_week:
                 str_each_data = element_text_data + " " + each_data
-    # print(str_each_data)
+        elif element_text_data in ['через', 'Через']:
+            cprint(element_text_data, 'red')
+            index_through = message_split.index(element_text_data)
+            each_data = str(message_split[index_through + 1])
+            cprint(each_data, 'yellow')
+            if each_data in days_of_the_week:
+                str_each_data = element_text_data + " " + each_data
 
-            # if recurring_date in days_of_the_week:
-            #     print(element_text_data + " " + recurring_date)
 
-    # определение времени в числовом представлении 16:00, 13:23 и т.д.
+    # определение времени в числовом представлении 16:00, 13:23 и т.д. / ГОТОВО
     for index_time, element_time in enumerate(message_split):
         # print(element_time)
         if (':' in element_time) and (element_time.replace(':', '').isdigit()) and (len(element_time) in [4, 5]):
@@ -185,13 +195,16 @@ for i in range(36):
             # cprint(word_before_element, 'red')
             if word_before_element in ['в', 'к']:
                 # cprint("в, к", 'yellow')
+                time = element_time
                 mask_str_time = word_before_element + ' ' + element_time
                 # cprint(mask_str_time, 'cyan')
             else:
                 mask_str_time = element_time
+                time = element_time
                 # cprint(element_time, 'magenta')
         else:
             element_time = None
+
 
 
     # вывод результата, пока что в столбик, для наглядности
@@ -203,15 +216,18 @@ for i in range(36):
         print('Число: ', date_number)
         print('Месяц: ', mount)
         print('Год: ', year)
-        print('Время: ', mask_str_time)
-        print('Общее время (спец. для каждый...):', str_each_data)
+        print('Время: ', time)
+        print('Время split: ', mask_str_time)
+        print('Время (каждый)', str_through_data)
+        print('Время (через)', str_each_data)
         replace_time = result.replace(str(mask_str_time), '')
         replace_date = replace_time.replace(str(mask_str_date), '')
         replace_year = replace_date.replace(str(year), '')
         replace_each_data = replace_year.replace(str(str_each_data), '')
-        text = replace_each_data.rstrip().capitalize()
+        text = replace_each_data.rstrip().lstrip().capitalize()
 
         print('Текст: ', text)
+
     print('\n')
 
     # print("MESSAGE=",
