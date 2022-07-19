@@ -48,7 +48,7 @@ for i in range(36):
     # проверка статуса на условия и сплит строки (проблема с пробелами)
     if isinstance(message_space, str):
         message = message_space.lstrip()
-        message_split = re.split(' |_', message)
+        message_split = re.split(' ', message)
         status = None
         # print(message_split[0])
 
@@ -166,22 +166,16 @@ for i in range(36):
     # cprint(len(message_split), 'red')
     for element_text_data in message_split:
         if element_text_data in recurring_date:
-            cprint(element_text_data, 'magenta')
+            # cprint(element_text_data, 'magenta')
             index_recurring = message_split.index(element_text_data)
             each_data = str(message_split[index_recurring + 1])
             # cprint(each_data, 'magenta')
             if each_data in days_of_the_week:
                 str_each_data = element_text_data + " " + each_data
-    print(str_each_data)
-
-                # нужно допилить
-
-
+    # print(str_each_data)
 
             # if recurring_date in days_of_the_week:
             #     print(element_text_data + " " + recurring_date)
-
-
 
     # определение времени в числовом представлении 16:00, 13:23 и т.д.
     for index_time, element_time in enumerate(message_split):
@@ -204,7 +198,6 @@ for i in range(36):
     result = ' '.join(message_split)
 
     print('Статус: ', status)
-
 
     if status == "Success":
         print('Число: ', date_number)

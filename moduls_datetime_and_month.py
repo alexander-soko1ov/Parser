@@ -22,8 +22,7 @@
 # print('В назначенное время ', at_the_time)
 
 # определение месяца
-string = "МаЯ"
-string = string.lower()
+
 
 # dictionary_month = {
 #     'января': 'January',
@@ -40,10 +39,13 @@ string = string.lower()
 #     'декабря': 'December'
 # }
 
+string = "май"
+string = string.lower()
+
 dictionary_month = {
         'января': 1,
         'февраля': 2,
-        'марта': 3,
+        'март': 3,
         'апреля': 4,
         'мая': 5,
         'июня': 6,
