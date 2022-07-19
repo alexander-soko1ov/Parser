@@ -18,7 +18,6 @@ for day_of_week in dict_day_of_week:
     if split_string[1] in list_day_of_week:
         month_index = dict_day_of_week[day_of_week]
         month = int(dict_day_of_week[day_of_week])
-
 print(month)
 
 
