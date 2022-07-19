@@ -1,7 +1,7 @@
 import re
 from termcolor import colored, cprint
 
-string = 'каждый месяц'
+string = 'каждый год'
 
 string_split = string.split()
 print(string_split)
@@ -48,6 +48,17 @@ dictionary_datetime = {
     'год': 'year'
 }
 
+def finding_matches(string_split, dictionary):
+    for element in string_split:
+        for element_dict in dictionary:
+            if (element_dict[:-1] == element) or \
+                    (element_dict == element) \
+                    or (element_dict == element[:-1]) or \
+                    (element_dict[:-1] == element[:-1]):
+                result = element_dict
+    return result
+
+
 for element in string_split:
     element_on_right = None
     if element in ['каждое', 'каждую', 'каждый']:
@@ -58,12 +69,13 @@ for element in string_split:
         index_element_on_rigth = string_split.index(element_on_right)
 
         if not element_on_right.isdigit() and not (element_on_right in dictionary_datetime):
-            for element_days_of_the_week in days_of_the_week:
-                if (element_days_of_the_week[:-1] == element_on_right) or \
-                        (element_days_of_the_week == element_on_right) \
-                        or (element_days_of_the_week == element_on_right[:-1]) or \
-                        (element_days_of_the_week[:-1] == element_on_right[:-1]):
-                    day_of_the_week = element_days_of_the_week
+            day_of_the_week = finding_matches(string_split, days_of_the_week)
+            # for element_days_of_the_week in days_of_the_week:
+            #     if (element_days_of_the_week[:-1] == element_on_right) or \
+            #             (element_days_of_the_week == element_on_right) \
+            #             or (element_days_of_the_week == element_on_right[:-1]) or \
+            #             (element_days_of_the_week[:-1] == element_on_right[:-1]):
+            #         day_of_the_week = element_days_of_the_week
 
         elif element_on_right.isdigit() and ((len(element_on_right) == 1) or (len(element_on_right) == 2)):
             numbers = element_on_right
@@ -73,12 +85,13 @@ for element in string_split:
             if month_or_numbers in ['число']: # проверка на слово 'число'
                     word_number = month_or_numbers
             else:   # проверка на месяц
-                for element_dictionary_month in dictionary_month:
-                    if (element_dictionary_month[:-1] == month_or_numbers) or \
-                            (element_dictionary_month == month_or_numbers) \
-                            or (element_dictionary_month == month_or_numbers[:-1]) or   \
-                            (element_dictionary_month[:-1] == month_or_numbers[:-1]):
-                        mount = element_dictionary_month
+                mount = finding_matches(string_split, dictionary_month)
+                # for element_dictionary_month in dictionary_month:
+                #     if (element_dictionary_month[:-1] == month_or_numbers) or \
+                #             (element_dictionary_month == month_or_numbers) \
+                #             or (element_dictionary_month == month_or_numbers[:-1]) or   \
+                #             (element_dictionary_month[:-1] == month_or_numbers[:-1]):
+                #         mount = element_dictionary_month
 
         elif month_or_numbers in dictionary_month:
             mount = month_or_numbers
