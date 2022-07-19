@@ -1,7 +1,7 @@
 import re
 from termcolor import colored, cprint
 
-string = 'во вторник'
+string = 'каждый понедельник'
 
 string_split = string.split()
 print(string_split)
@@ -97,7 +97,7 @@ for element in string_split:
         pass
 
 print(each)
-print(word_number)
+# print(word_number)
 print('число: ', numbers)
 print('день недели: ', day_of_the_week)
 print('месяц: ', mount)
