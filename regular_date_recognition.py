@@ -1,7 +1,7 @@
 import re
 from termcolor import colored, cprint
 
-string = 'через неделю'
+string = 'на неделе'
 
 string_split = string.split()
 print(string_split)
