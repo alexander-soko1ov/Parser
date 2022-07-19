@@ -1,7 +1,7 @@
 import re
 from termcolor import colored, cprint
 
-string = 'каждый понедельник'
+string = 'через неделю'
 
 string_split = string.split()
 print(string_split)
@@ -13,6 +13,7 @@ word_number = None
 day_of_the_week = None
 datetime_element_on_right = None
 month_or_numbers = None
+on_the_week = None
 
 days_of_the_week = {
     'понедельник': 1,
@@ -40,10 +41,11 @@ dictionary_month = {
 }
 
 dictionary_datetime = {
-    'минуту': 'minute',
+    'минута': 'minute',
     'час': 'hour',
     'день': 'day',
-    'неделю': 'week',
+    'дне': 'day',
+    'неделя': 'week',
     'месяц': 'month',
     'год': 'year'
 }
@@ -64,7 +66,6 @@ for element in string_split:
     if element in ['каждое', 'каждую', 'каждый']:
         index_element = string_split.index(element) + 1
         element_on_right = string_split[index_element]
-
         each = element
         index_element_on_rigth = string_split.index(element_on_right)
 
@@ -93,12 +94,24 @@ for element in string_split:
         each = element
         day_of_the_week = finding_matches(string_split, days_of_the_week)
 
+    elif element in ['на']:
+        index_element = string_split.index(element) + 1
+        element_on_right = string_split[index_element]
+        each = element
+        datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
+    elif element in ['через', 'Через']:
+        index_element = string_split.index(element) + 1
+        element_on_right = string_split[index_element]
+        each = element
+        datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
+
     else:
         pass
 
-print(each)
+print('индекс: ', each)
 # print(word_number)
 print('число: ', numbers)
 print('день недели: ', day_of_the_week)
 print('месяц: ', mount)
 print('час, месяц, год и.д.: ', datetime_element_on_right)
+# print('на: ', on_the_week)
