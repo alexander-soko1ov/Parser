@@ -22,8 +22,6 @@ print('Через время: ', through_time)
 print('В назначенное время: ', at_the_time)
 
 
-
-
 # # определение месяца
 # dictionary_month = {
 #     'января': 'January',
