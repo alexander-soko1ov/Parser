@@ -60,6 +60,7 @@ def finding_matches(string_split, dictionary):
                 result = element_dict
     return result
 
+
 for element in string_split:
     element_on_right = None
     if element in ['каждое', 'каждую', 'каждый']:
@@ -103,7 +104,6 @@ for element in string_split:
         element_on_right = string_split[index_element]
         each = element
         datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
-
     else:
         pass
 
