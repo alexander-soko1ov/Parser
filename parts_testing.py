@@ -106,6 +106,16 @@ for i in range(36):
         'число': 5
     }
 
+    recurring_date = {
+        'через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое', 'каждый', 'Каждый',
+        'каждую', 'Каждую'
+    }
+
+    days_of_the_week = {
+        'понедельник', 'вторник', 'среда', 'четверг', 'пятницу', 'субботу',
+        'воскресенье', 'день', 'дней', 'неделю', 'недель', 'месяц', 'год'
+    }
+
     for element_1 in message_split:
         if element_1.isdigit():
             if (len(element_1) == 2 or len(element_1) == 1):
@@ -123,7 +133,7 @@ for i in range(36):
                 # elif index_1 in 'число':
                 #     date_number = number
                 #     mask_str_date = number + " " + index_1
-                elif index_2 in ['через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое', 'каждый']:
+                elif index_2 in recurring_date:
                     if index_1 in dictionary_time:
                         date_number = number
                         mask_str_time = index_2 + " " + number + " " + index_1
@@ -147,6 +157,26 @@ for i in range(36):
                 year = element_year + " " + right_element
                 # print(year)
     # print("год:", year)
+
+    rec_days = None
+
+    # определение каждый год, каждый день и т.д.
+    # cprint(len(message_split), 'red')
+    for element_text_data in message_split:
+        if element_text_data in recurring_date:
+            cprint(element_text_data, 'magenta')
+            index_recurring = message_split.index(element_text_data)
+            reс_days = str(message_split[index_recurring + 1])
+            cprint(reс_days, 'magenta')
+            if reс_days in days_of_the_week:
+                print(element_text_data)
+                print(rec_days)
+
+
+
+            # if recurring_date in days_of_the_week:
+            #     print(element_text_data + " " + recurring_date)
+
 
 
     # определение времени в числовом представлении 16:00, 13:23 и т.д.
