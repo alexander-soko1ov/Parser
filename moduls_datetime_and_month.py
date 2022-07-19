@@ -18,8 +18,8 @@
 # at_the_time = after_time + delta_time
 #
 #
-# print('через время ', through_time)
-# print('в назначенное время ', at_the_time)
+# print('Через время ', through_time)
+# print('В назначенное время ', at_the_time)
 
 # определение месяца
 string = "МаЯ"
