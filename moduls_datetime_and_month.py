@@ -25,6 +25,21 @@
 string = "МаЯ"
 string = string.lower()
 
+# dictionary_month = {
+#     'января': 'January',
+#     'февраля': 'February',
+#     'марта': 'March',
+#     'апреля': 'April',
+#     'мая': 'May',
+#     'июня': 'June',
+#     'июля': 'July',
+#     'августа': 'August',
+#     'сентября': 'September',
+#     'октября': 'October',
+#     'ноября': 'November',
+#     'декабря': 'December'
+# }
+
 dictionary_month = {
         'января': 1,
         'февраля': 2,
@@ -42,5 +57,6 @@ dictionary_month = {
 
 for element in dictionary_month:
     # if (element[:len(element)-1] in dictionary_month ) or (element in dictionary_month ):
-    if (element[:-1] == string) or (element == string) or (element == string[:-1]) or (element[:-1] == string[:-1]):
+    if (element[:-1] == string) or (element == string) \
+            or (element == string[:-1]) or (element[:-1] == string[:-1]):
         print("месяц: ", dictionary_month[element])

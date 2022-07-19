@@ -84,18 +84,18 @@ for i in range(36):
     element_time = None
 
     dictionary_month = {
-        'января': 'January',
-        'февраля': 'February',
-        'марта': 'March',
-        'апреля': 'April',
-        'мая': 'May',
-        'июня': 'June',
-        'июля': 'July',
-        'августа': 'August',
-        'сентября': 'September',
-        'октября': 'October',
-        'ноября': 'November',
-        'декабря': 'December'
+        'января': 1,
+        'февраля': 2,
+        'марта': 3,
+        'апреля': 4,
+        'мая': 5,
+        'июня': 6,
+        'июля': 7,
+        'августа': 8,
+        'сентября': 9,
+        'октября': 10,
+        'ноября': 11,
+        'декабря': 12
     }
 
     dictionary_time = {
@@ -113,7 +113,8 @@ for i in range(36):
 
     days_of_the_week = {
         'понедельник', 'вторник', 'среда', 'четверг', 'пятницу', 'субботу',
-        'воскресенье', 'день', 'дней', 'неделю', 'недель', 'месяц', 'год'
+        'воскресенье', 'день', 'дня', 'дней', 'неделю', 'недель', 'месяц', 'год',
+        'час', 'часа', 'часов'
     }
 
     for element_1 in message_split:
@@ -157,8 +158,9 @@ for i in range(36):
                 year = element_year + " " + right_element
                 # print(year)
     # print("год:", year)
-
-    rec_days = None
+    element_text_data = None
+    each_data = None
+    str_each_data = None
 
     # определение каждый год, каждый день и т.д.
     # cprint(len(message_split), 'red')
@@ -166,11 +168,12 @@ for i in range(36):
         if element_text_data in recurring_date:
             cprint(element_text_data, 'magenta')
             index_recurring = message_split.index(element_text_data)
-            reс_days = str(message_split[index_recurring + 1])
-            cprint(reс_days, 'magenta')
-            if reс_days in days_of_the_week:
-                print(element_text_data)
-                print(rec_days)
+            each_data = str(message_split[index_recurring + 1])
+            # cprint(each_data, 'magenta')
+            if each_data in days_of_the_week:
+                str_each_data = element_text_data + " " + each_data
+    print(str_each_data)
+
                 # нужно допилить
 
 
@@ -208,12 +211,14 @@ for i in range(36):
         print('Месяц: ', mount)
         print('Год: ', year)
         print('Время: ', mask_str_time)
+        print('Общее время (спец. для каждый...):', str_each_data)
         replace_time = result.replace(str(mask_str_time), '')
         replace_date = replace_time.replace(str(mask_str_date), '')
         replace_year = replace_date.replace(str(year), '')
-        text = replace_year.rstrip().capitalize()
+        replace_each_data = replace_year.replace(str(str_each_data), '')
+        text = replace_each_data.rstrip().capitalize()
 
-        print(text)
+        print('Текст: ', text)
     print('\n')
 
     # print("MESSAGE=",
