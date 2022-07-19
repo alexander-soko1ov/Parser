@@ -214,7 +214,7 @@ for i in range(36):
         print('Текст: ', text)
     print('\n')
 
-    print("MESSAGE=",
-          {'STATUS': status, 'TEXT': text,
-          'PARAMS': {'repeat_always': repeat_always_monday, 'day_of_week': result},
-           'DATE': {'hour': hour, 'minute': minute}})
+    # print("MESSAGE=",
+    #       {'STATUS': status, 'TEXT': text,
+    #       'PARAMS': {'repeat_always': repeat_always_monday, 'day_of_week': result},
+    #        'DATE': {'hour': hour, 'minute': minute}})
