@@ -210,7 +210,6 @@ for i in range(36):
         replace_year = replace_date.replace(str(year), '')
         replace_each_data = replace_year.replace(str(str_each_data), '')
         text = replace_each_data.rstrip().lstrip().capitalize()
-
         print('Текст: ', text)
     print('\n')
 
