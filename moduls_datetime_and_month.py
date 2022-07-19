@@ -22,7 +22,6 @@
 # print('в назначенное время ', at_the_time)
 
 # определение месяца
-
 string = "МаЯ"
 string = string.lower()
 
