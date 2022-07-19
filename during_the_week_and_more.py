@@ -6,8 +6,6 @@ string = 'на 2-3 дня'
 string_split = string.split()
 print(string_split)
 
-
-
 def finding_matches(string_split, dictionary):
     for element in string_split:
         for element_dict in dictionary:
