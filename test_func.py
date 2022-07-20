@@ -4,7 +4,7 @@ from termcolor import colored, cprint
 
 
 # print('Введите строку:')
-string = 'в 23:00'
+string = '21 июля в 12:01'
 cprint(string, 'green')
 
 
