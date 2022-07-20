@@ -8,6 +8,8 @@ print(string_split)
 
 mount = None
 numbers = None
+hour = None
+minutes = None
 each = None
 word_number = None
 day_of_the_week = None
@@ -121,9 +123,32 @@ for element in string_split:
     else:
         pass
 
+    for index_time, element_time in enumerate(string_split):
+        if (':' in element_time) and (element_time.replace(':', '').isdigit()) and (len(element_time) in [4, 5]):
+            word_before_element = string_split[index_time - 1]
+            if len(element_time) == 4:
+                hour = element_time[:-3]
+                minutes = element_time[2:]
+
+            else:
+                hour = element_time[:-3]
+                minutes = element_time[3:]
+
+            if word_before_element in ['в', 'к']:
+                # cprint("в, к", 'yellow')
+                mask_str_time = word_before_element + ' ' + element_time
+            else:
+                mask_str_time = element_time
+
+        else:
+            element_time = None
+
+
 print('индекс: ', each)
 # print(word_number)
 print('число: ', numbers)
+print('часы: ', hour)
+print('минуты: ', minutes)
 print('день недели: ', day_of_the_week)
 print('месяц: ', mount)
 print('час, месяц, год и.д.: ', datetime_element_on_right)
