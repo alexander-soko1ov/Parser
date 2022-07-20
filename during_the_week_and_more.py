@@ -34,6 +34,7 @@ for element in string_split:
     if element in ['на']:
         index_element = string_split.index(element) + 1
         element_on_right = string_split[index_element]
+        each = element
 
         if ('-' in element_on_right) and (element_on_right.replace('-', '').isdigit()) and (len(element_on_right) in [3, 5]):
             for element_data in element_on_right:
@@ -43,6 +44,7 @@ for element in string_split:
                     index_data_r = element_on_right.index(element_data) + 1
                     if element_on_right[index_data_l].isdigit() and element_on_right[index_data_r].isdigit():
                         datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
-                        print(element, element_on_right[index_data_l], element_data, element_on_right[index_data_r], datetime_element_on_right)
+                        number = element_on_right[index_data_l] + element_data + element_on_right[index_data_r]
+                        print(element, number, datetime_element_on_right)
 
 # result = re.findall(r'[нН][аА][\s][\d][\d]?[-]?[\d]?[\d]', string)
