@@ -4,7 +4,7 @@ from termcolor import colored, cprint
 
 
 # print('Введите строку:')
-string = '21 июля в 12:01'
+string = 'в понедельник через 24:00 в 13:12'
 cprint(string, 'green')
 
 
@@ -32,13 +32,13 @@ hour = time_today.hour
 minutes = time_today.minute
 
 days_of_the_week = {
-    'понедельник': 1,
-    'вторник': 2,
-    'среда': 3,
-    'четверг': 4,
-    'пятница': 5,
-    'суббота': 6,
-    'воскресенье': 7
+    'понедельник': 0,
+    'вторник': 1,
+    'среда': 2,
+    'четверг': 3,
+    'пятница': 4,
+    'суббота': 5,
+    'воскресенье': 6
 }
 
 dictionary_month = {
