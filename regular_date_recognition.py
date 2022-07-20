@@ -1,7 +1,7 @@
 import re
 from termcolor import colored, cprint
-
-string = 'на неделе'
+print('Введите строку:')
+string = input()
 
 string_split = string.split()
 print(string_split)
@@ -58,7 +58,8 @@ def finding_matches(string_split, dictionary):
                     or (element_dict == element[:-1]) or \
                     (element_dict[:-1] == element[:-1]):
                 result = element_dict
-    return result
+                data = dictionary[result]
+    return data
 
 
 for element in string_split:
@@ -98,12 +99,25 @@ for element in string_split:
         index_element = string_split.index(element) + 1
         element_on_right = string_split[index_element]
         each = element
-        datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
+
+        if ('-' in element_on_right) and (element_on_right.replace('-', '').isdigit()) and (len(element_on_right) in [3, 5]):
+            for element_data in element_on_right:
+                if element_data == '-':
+                    index_data_l = element_on_right.index(element_data) - 1
+                    index_data_r = element_on_right.index(element_data) + 1
+                    if element_on_right[index_data_l].isdigit() and element_on_right[index_data_r].isdigit():
+                        datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
+                        numbers = element_on_right[index_data_l] + element_data + element_on_right[index_data_r]
+                        # print(element, number, datetime_element_on_right)
+        else:
+            datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
+
     elif element in ['через', 'Через']:
         index_element = string_split.index(element) + 1
         element_on_right = string_split[index_element]
         each = element
         datetime_element_on_right = finding_matches(string_split, dictionary_datetime)
+
     else:
         pass
 
