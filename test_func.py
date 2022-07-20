@@ -1,10 +1,11 @@
 import re
+import datetime
 from termcolor import colored, cprint
 
 
 # print('Введите строку:')
-string = 'в понедельник 12 декабря'
-print(string)
+string = 'в 23:00'
+cprint(string, 'green')
 
 
 mount = None
@@ -18,6 +19,18 @@ datetime_element_on_right = None
 month_or_numbers = None
 on_the_week = None
 
+through_time = None
+at_the_time = None
+
+time_today = datetime.datetime.today()
+print('Сейчас: ', time_today)
+
+year = time_today.year
+mount_data = time_today.month
+numbers = time_today.day
+hour = time_today.hour
+minutes = time_today.minute
+
 days_of_the_week = {
     'понедельник': 1,
     'вторник': 2,
@@ -29,18 +42,18 @@ days_of_the_week = {
 }
 
 dictionary_month = {
-    'января': 1,
-    'февраля': 2,
+    'январь': 1,
+    'февраль': 2,
     'март': 3,
-    'апреля': 4,
-    'мая': 5,
-    'июня': 6,
-    'июля': 7,
-    'августа': 8,
-    'сентября': 9,
-    'октября': 10,
-    'ноября': 11,
-    'декабря': 12
+    'апрель': 4,
+    'май': 5,
+    'июнь': 6,
+    'июль': 7,
+    'август': 8,
+    'сентябрь': 9,
+    'октябрь': 10,
+    'ноябрь': 11,
+    'декабрь': 12
 }
 
 dictionary_datetime = {
@@ -112,9 +125,11 @@ for element in string_split:
                 word_number = month_or_numbers
             else:   # проверка на месяц
                 mount = finding_matches(string_split, dictionary_month, 0)
+                mount_data = dictionary_month[mount]
 
         elif month_or_numbers in dictionary_month:
             mount = month_or_numbers
+            mount_data = dictionary_month[mount]
 
         if element_on_right in dictionary_datetime:
             datetime_element_on_right = element_on_right
@@ -150,6 +165,8 @@ for element in string_split:
 
     else:
         mount = finding_matches(string_split, dictionary_month, 0)
+        if not mount == 0:
+            mount_data = dictionary_month[mount]
         index_element = string_split.index(element) - 1
         element_on_left = string_split[index_element]
         if element_on_left.isdigit() and len(element_on_left) in [1, 2]:
@@ -175,6 +192,19 @@ for element in string_split:
         else:
             element_time = None
 
+
+# работа с datetime, получение года, месяца, даты и времени, исходя из изначальных условий
+after_time = datetime.datetime(year=int(year), month=int(mount_data), day=int(numbers))
+
+delta_time = datetime.timedelta(hours=int(hour), minutes=int(minutes))
+if each in ['через', 'Через']:
+    through_time = time_today + delta_time
+elif each in ['к', 'в']:
+    at_the_time = after_time + delta_time
+
+
+print('Через время: ', through_time)
+print('В назначенное время: ', at_the_time)
 
 print('статус: ', status)
 if status == 'Success':
