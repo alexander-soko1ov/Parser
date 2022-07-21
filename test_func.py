@@ -2,10 +2,57 @@ import re
 import datetime
 from termcolor import colored, cprint
 
+text_0 = "Начать собираться в 4:31"
+text_1 = "Проснуться, улыбнуться, почистить зубы и помыться в 07:13"
+text_2 = "Съездить на дачу 17 мая в 16:15"
+text_3 = 'Подписать служебку у начальника 13 декабря 2021 года в 16:15'
+text_4 = "Убраться в квартире через 90 минут"
+text_5 = "Позвонить друзьям через 3 часа"
+text_6 = "Приготовить покушать на 2-3 дня 3 сентября 2022 года в 06:01"
+text_7 = "Перевод локального компьютера в режим гибернации завтра"
+text_8 = "Выключить 13 декабря в 20:17"
+text_9 = "Перевод локального компьютера в режим гибернации через 2 дня"
+text_10 = 'Служебку подписать на питон 12 ноября утром'
+text_11 = 'Служебку подписать на питон в четверг в 20:17'
+text_12 = 'Служебку подписать на питон в среду'
+text_13 = 'Служебку в отдел кадров в среду в 13:13'
+text_14 = "В понедельник уроки"
+text_15 = 'Поскольку все записи имеют один и тот же шаблон, внести данные, которые хотите извлечь из пары скобок 13 декабря 2022 года в 16:15'
+text_16 = "Напомни про гречку через 14 минут"
+text_17 = "Через 50 минут таймер установаить. дерзай"
+text_18 = "Основы_Python_в_четверг_15:00 3 сентября 2022 года"
+text_19 = " Основы_Python_в_четверг_15:00 в среду 15:00 "
+text_20 = "13 1311"
+text_21 = 1231
+text_22 = "Сходить покушать на неделе в 13:13"
+text_23 = "del_qustion_answer*как дела?*норма, как сам?"
+text_24 = "Сходить покушать на неделе"
+text_25 = "В следующем месяце Подписать служебку "
+text_26 = "\d\de23 2\3 3r3556"
+text_27 = "Подписать служебку по выходным"
+text_28 = "Сходить в сауну каждое 28 число"
+text_29 = "Подписать служебку по выходным в 20:19"
+text_30 = "поздравить с др маму через год в 20:18"
+text_31 = "поздравить с др маму через час"
+text_32 = "тренировка каждый час в 20:19"
+text_33 = "Подписать служебку 23 февраля"
+text_34 = "Тренировка каждый понедельник"
+text_35 = "Тренировка каждый день"
 
 # print('Введите строку:')
-string = 'в понедельник через 24:00 в 13:12'
+string = 'поздравить с др маму через час'
 cprint(string, 'green')
+
+'''
+добавить функцию проверки времени времени в сообщении и времени сейчас, если время в сообщении больше, 
+то переводить дату на следующую
+
+добавить функцию прибавления к времени сейчас времени из фраз в тексте 'через час, минуту и т.д.' 
+
+добавить сюда функцию определения фраз 'на неделе, на выходных'
+
+добавить сюда функцию определения дат по дням недели
+'''
 
 
 mount = None
@@ -18,12 +65,15 @@ day_of_the_week = None
 datetime_element_on_right = None
 month_or_numbers = None
 on_the_week = None
+hour_str = 0
+minutes_str = 0
+
 
 through_time = None
 at_the_time = None
 
 time_today = datetime.datetime.today()
-print('Сейчас: ', time_today)
+# print('Сейчас: ', time_today)
 
 year = time_today.year
 mount_data = time_today.month
@@ -176,12 +226,12 @@ for element in string_split:
         if (':' in element_time) and (element_time.replace(':', '').isdigit()) and (len(element_time) in [4, 5]):
             word_before_element = string_split[index_time - 1]
             if len(element_time) == 4:
-                hour = element_time[:-3]
-                minutes = element_time[2:]
+                hour_str = element_time[:-3]
+                minutes_str = element_time[2:]
 
             else:
-                hour = element_time[:-3]
-                minutes = element_time[3:]
+                hour_str = element_time[:-3]
+                minutes_str = element_time[3:]
 
             if word_before_element in ['в', 'к']:
                 # cprint("в, к", 'yellow')
@@ -196,17 +246,25 @@ for element in string_split:
 # работа с datetime, получение года, месяца, даты и времени, исходя из изначальных условий
 after_time = datetime.datetime(year=int(year), month=int(mount_data), day=int(numbers))
 
-delta_time = datetime.timedelta(hours=int(hour), minutes=int(minutes))
+delta_time = datetime.timedelta(hours=int(hour_str), minutes=int(minutes_str))
+
+time = None
+
 if each in ['через', 'Через']:
-    through_time = time_today + delta_time
+    time = time_today + delta_time
+    hour = time.hour
+    minutes = time.minute
 elif each in ['к', 'в']:
-    at_the_time = after_time + delta_time
+    time = after_time + delta_time
+    hour = time.hour
+    minutes = time.minute
 
 
-print('Через время: ', through_time)
-print('В назначенное время: ', at_the_time)
+
+print('Время: ', time)
 
 print('статус: ', status)
+
 if status == 'Success':
     print('индекс: ', each)
     # print(word_number)
