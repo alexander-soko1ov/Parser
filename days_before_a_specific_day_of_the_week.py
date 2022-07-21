@@ -1,7 +1,8 @@
 import datetime
 from termcolor import colored, cprint
 
-weekday_after = 'четверг'
+string = 'фыв 123 фы 123 в пятницу'
+string_split = string.split()
 
 days_of_the_week = {
     'понедельник': 0,
@@ -13,45 +14,50 @@ days_of_the_week = {
     'воскресенье': 6
 }
 
-time_today = datetime.datetime.today()
-date = time_today.date()
-print(date)
-date_delta = datetime.timedelta()
-# print('Время сейчас:', time_today)
+def finding_matches(string_split, dictionary, data):
+    for element in string_split:
+        for element_dict in dictionary:
+            if (element_dict[:-1] == element) or \
+                    (element_dict == element) \
+                    or (element_dict == element[:-1]) or \
+                    (element_dict[:-1] == element[:-1]):
+                if data == 1:
+                    result = element_dict
+                    data = dictionary[result]
+                else:
+                    data = element_dict
+    return data
 
+def get_key_by_value(value, dictionary):
+    result = None
+    for element in dictionary:
+        if dictionary[element] == value:
+            result = element
+    return result
 
-year = time_today.year
-mount = time_today.month
-weekday = time_today.weekday()   # сегодняшний день недели
-day = time_today.day
+datetime_today = datetime.datetime.today()
+weekday = datetime_today.weekday()
 
+date_difference = 0
+days_week = None
 
-date_difference = None
+for weekday_after in string_split:
+    # cprint(finding_matches(string_split, days_of_the_week, 1), 'red')
+    date_def = finding_matches(string_split, days_of_the_week, 1)
+    if date_def in [0, 1, 2, 3, 4, 5, 6]:
+        weekday_after = get_key_by_value(date_def, days_of_the_week)
+        if days_of_the_week[weekday_after] < weekday:
+            date_difference = days_of_the_week[weekday_after] - weekday + 7
+        elif days_of_the_week[weekday_after] == weekday:
+            date_difference = days_of_the_week[weekday_after] - weekday + 7
+        elif days_of_the_week[weekday_after] > weekday:
+            date_difference = days_of_the_week[weekday_after] - weekday
 
-if weekday_after in days_of_the_week:
-    # print(weekday_after)
-    day_weekday = days_of_the_week[weekday_after]
-
-    if days_of_the_week[weekday_after] < weekday:
-        date_difference = days_of_the_week[weekday_after] - weekday + 7
-
-
-    elif days_of_the_week[weekday_after] == weekday:
-        date_difference = days_of_the_week[weekday_after] - weekday + 7
-
-        # нужно прибавить одну неделю, так как уведомления на сегоднящнюю дату с её указанием никто ставить не должен
-
-
-    elif days_of_the_week[weekday_after] > weekday:
-        date_difference = days_of_the_week[weekday_after] - weekday
-
-
-print('День недели из сообщения: ', day_weekday)  # дата из сообщения
-print('День недели сейчас:', weekday)
-print('разница дней недели (прибавить к дате)', date_difference)
-# print('количество недель до даты: ', mount)
-print('число', day + date_difference)
-
-# today = datetime.date.today()
-# result = today + datetime.timedelta(days=-today.weekday(), weeks=1)
-# cprint(result, 'red')
+number = datetime_today + datetime.timedelta(days=date_difference, weeks=0)
+year = number.year
+mount = number.month
+day = number.day
+hour = number.hour
+minutes = number.minute
+print(day, mount, year)
+print(hour, ":", minutes)
