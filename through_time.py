@@ -1,7 +1,7 @@
 import datetime
 from termcolor import colored, cprint
 
-string = 'Тренировка через 3 дня'
+string = 'Тренировка через день'
 string_split = string.lower().split()
 print(string_split)
 
@@ -138,7 +138,7 @@ def through_time(string_split, dictionary, format_date=0, mask=0):
 
     if not suggestion_function(string_split, dictionary, 0) == None and not finding_matches(string_split, dictionary_datetime, 0) == None and not mask_time == None:
         mask_every = suggestion_function(string_split, dictionary, 0) + " " + mask_time + " " + finding_matches(string_split, dictionary_datetime, 2)
-    elif mask_time == None:
+    elif (not(suggestion_function(string_split, dictionary, 0) == None) and not(finding_matches(string_split, dictionary_datetime, 0) == None)) and mask_time == None:
         mask_every = suggestion_function(string_split, dictionary, 0) + " " + finding_matches(string_split, dictionary_datetime, 2)
 
     if format_date == 0:
