@@ -3,7 +3,7 @@ import random
 import datetime
 from termcolor import colored, cprint
 
-string = 'к 12:16'
+string = 'в 12:16'
 string_split = string.split()
 print(string_split)
 
