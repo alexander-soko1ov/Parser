@@ -7,6 +7,8 @@ string = 'к 12:01'
 string_split = string.split()
 
 def digital_time_finding(string_split, hour_k=0, minute_k=0, mask=0):
+    """функция работает с датами в цифровом формате 'в 12:01, к 18:45',
+     выводит часы, минуты, маску """
     datetime_today = datetime.datetime.today()
     mask_str_time = None
     for index_time, element_time in enumerate(string_split):
