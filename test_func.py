@@ -1,4 +1,5 @@
 import re
+import random
 import datetime
 from termcolor import colored, cprint
 
@@ -40,7 +41,7 @@ text_34 = "Тренировка каждый понедельник"
 text_35 = "Тренировка каждый день"
 
 # print('Введите строку:')
-string = 'поздравить с др маму через час'
+string = 'Основы_Python_в_четверг_15:00 в среду 15:00 '
 cprint(string, 'green')
 
 '''
@@ -52,6 +53,8 @@ cprint(string, 'green')
 добавить сюда функцию определения фраз 'на неделе, на выходных'
 
 добавить сюда функцию определения дат по дням недели
+
+разобраться с number из данного текста 'тренировка каждый час в 20:19' выводится numbers = 21
 '''
 
 
@@ -72,14 +75,20 @@ minutes_str = 0
 through_time = None
 at_the_time = None
 
-time_today = datetime.datetime.today()
+'''
+время и дата сейчас
+'''
+datetime_today = datetime.datetime.today()
 # print('Сейчас: ', time_today)
-
-year = time_today.year
-mount_data = time_today.month
-numbers = time_today.day
-hour = time_today.hour
-minutes = time_today.minute
+weekday_today = datetime_today.weekday()
+year = datetime_today.year
+mount_data = datetime_today.month
+numbers = datetime_today.day
+hour = datetime_today.hour
+minutes = datetime_today.minute
+date_difference = 0
+days_week = None
+weeks = 0
 
 days_of_the_week = {
     'понедельник': 0,
@@ -116,6 +125,21 @@ dictionary_datetime = {
     'год': 'year'
 }
 
+prefix_dictionary = {
+    'в': 1,
+    'через': 2,
+    'кажд': 3
+}
+
+
+def get_key_by_value(value, dictionary):
+    result = None
+    for element in dictionary:
+        if dictionary[element] == value:
+            result = element
+    return result
+
+
 def finding_matches(string_split, dictionary, data):
     for element in string_split:
         for element_dict in dictionary:
@@ -138,7 +162,7 @@ string_split = ''
 # проверка статуса на условия и сплит строки (проблема с пробелами)
 if isinstance(string, str):
     message = string.lstrip()
-    string_split = re.split(' ', message)
+    string_split = string.lower().split()
     status = None
 
     for element_status_word in string_split[0]:
@@ -153,8 +177,6 @@ if isinstance(string, str):
 else:
     status = "Failure"
 
-
-
 for element in string_split:
     element_on_right = None
     if element in ['каждое', 'каждую', 'каждый']:
@@ -168,6 +190,7 @@ for element in string_split:
 
         elif element_on_right.isdigit() and ((len(element_on_right) == 1) or (len(element_on_right) == 2)):
             numbers = element_on_right
+            cprint(element_on_right, 'red')
             index_element_on_rigth = string_split.index(element_on_right)
             month_or_numbers = string_split[index_element_on_rigth + 1]
 
@@ -222,6 +245,33 @@ for element in string_split:
         if element_on_left.isdigit() and len(element_on_left) in [1, 2]:
             numbers = element_on_left
 
+    for day_of_week in string_split:
+        prefixes_day_of_week = day_of_week
+        # cprint(finding_matches(string_split, days_of_the_week, 1), 'red')
+        # определение дней недели
+        date_def = finding_matches(string_split, days_of_the_week, 1)
+        if date_def in [0, 1, 2, 3, 4, 5, 6]:
+
+            day_of_week = get_key_by_value(date_def, days_of_the_week)
+            if days_of_the_week[day_of_week] < weekday_today:
+                date_difference = days_of_the_week[day_of_week] - weekday_today + 7
+            elif days_of_the_week[day_of_week] == weekday_today:
+                date_difference = days_of_the_week[day_of_week] - weekday_today + 7
+            elif days_of_the_week[day_of_week] > weekday_today:
+                date_difference = days_of_the_week[day_of_week] - weekday_today
+
+    '''
+    получение даты и времени из итогового значения
+    '''
+    number = datetime_today + datetime.timedelta(days=date_difference, weeks=weeks)
+    year = number.year
+    mount = number.month
+    day = number.day
+    hour = number.hour
+    minutes = number.minute
+    day_of_the_week = weekday_today
+
+
     for index_time, element_time in enumerate(string_split):
         if (':' in element_time) and (element_time.replace(':', '').isdigit()) and (len(element_time) in [4, 5]):
             word_before_element = string_split[index_time - 1]
@@ -250,8 +300,10 @@ delta_time = datetime.timedelta(hours=int(hour_str), minutes=int(minutes_str))
 
 time = None
 
+
+
 if each in ['через', 'Через']:
-    time = time_today + delta_time
+    time = datetime_today + delta_time
     hour = time.hour
     minutes = time.minute
 elif each in ['к', 'в']:
@@ -259,6 +311,13 @@ elif each in ['к', 'в']:
     hour = time.hour
     minutes = time.minute
 
+
+'''
+получение даты и времени из итогового значения
+'''
+
+print(day, mount, year)
+# print(hour, ":", minutes)
 
 
 print('Время: ', time)

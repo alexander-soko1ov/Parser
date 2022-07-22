@@ -66,11 +66,12 @@ for i in range(36):
         #     if element_status_str.isdigit() == True:
         #         print("")
 
+        cprint(message_split, 'green')
 
     else:
         status = "Failure"
 
-    cprint(message_split, 'green')
+
 
 
     # определение года в числовом формате (2021, 2022) и времени в числовом-текстовом формате (90 минут)
@@ -148,7 +149,7 @@ for i in range(36):
 
     for element_year in message_split:
         # cprint(element_year, 'red')
-        if element_year.isdigit() and len(element_year) == 4 and (2000 <= int(element_year) <= 3000):
+        if element_year.isdigit() and len(element_year) == 4 and (2020 <= int(element_year) <= 3000):
             year = element_year
             index_element = message_split.index(element_year) + 1
             # print(index_element)
@@ -196,7 +197,16 @@ for i in range(36):
 
     # вывод результата, пока что в столбик, для наглядности
     result = ' '.join(message_split)
+    replace_time = result.replace(str(mask_str_time), '')
+    replace_date = replace_time.replace(str(mask_str_date), '')
+    replace_year = replace_date.replace(str(year), '')
+    replace_each_data = replace_year.replace(str(str_each_data), '')
+    text = replace_each_data.rstrip().lstrip().capitalize()
 
+    text_split = text.split()
+    for element_text in text_split:
+        if element_text.isdigit():
+            status = 'Failure'
     print('Статус: ', status)
 
     if status == "Success":
@@ -205,12 +215,8 @@ for i in range(36):
         print('Год: ', year)
         print('Время: ', mask_str_time)
         print('Datetime (каждый и через):', str_each_data)
-        replace_time = result.replace(str(mask_str_time), '')
-        replace_date = replace_time.replace(str(mask_str_date), '')
-        replace_year = replace_date.replace(str(year), '')
-        replace_each_data = replace_year.replace(str(str_each_data), '')
-        text = replace_each_data.rstrip().lstrip().capitalize()
         print('Текст: ', text)
+
     print('\n')
 
     # print("MESSAGE=",

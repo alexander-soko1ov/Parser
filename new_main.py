@@ -4,6 +4,7 @@ import datetime
 from termcolor import colored, cprint
 
 
+
 text_0 = "Начать собираться в 4:31"
 text_1 = "Проснуться, улыбнуться, почистить зубы и помыться в 07:13"
 text_2 = "Съездить на дачу 17 мая в 16:15"
@@ -276,22 +277,26 @@ for i in range(36):
             """проверка на слова 'год', 'года', 'лет' и проверка високосный ли сейчас год,
              прибавление кол-ва лет к нынешнему году"""
             element_message_split_left = message_split[message_split.index(element_date) - 1]
-            if element_message_split_left.isdigit():
-                day_multiplier = int(element_message_split_left)
-            else:
-                day_multiplier = 1
-            if year % 4 == 0:
-                day_delta = 366 * day_multiplier
-                datetime_minutes = datetime_today + datetime.timedelta(days=int(day_delta))
-                day = datetime_minutes.day
-                year = datetime_minutes.year
-            else:
-                day_delta = 365 * day_multiplier
-                datetime_minutes = datetime_today + datetime.timedelta(days=int(day_delta))
-                day = datetime_minutes.day
-                year = datetime_minutes.year
+            if element_message_split_left.isdigit() and ((len(element_message_split_left) == 1) or (len(element_message_split_left) == 2)):
+                if element_message_split_left.isdigit():
+                    day_multiplier = int(element_message_split_left)
+                else:
+                    day_multiplier = 1
+                if year % 4 == 0:
+                    day_delta = 366 * day_multiplier
+                    datetime_minutes = datetime_today + datetime.timedelta(days=int(day_delta))
+                    day = datetime_minutes.day
+                    year = datetime_minutes.year
+                else:
+                    day_delta = 365
+                    datetime_minutes = datetime_today + datetime.timedelta(days=int(day_delta))
+                    day = datetime_minutes.day
+                    year = datetime_minutes.year
+            elif element_message_split_left.isdigit() and (len(element_message_split_left) == 4) and 2020 < int(element_message_split_left) < 2100:
+                year = element_message_split_left
 
 
+    """модуль ищет предлоги и выводит значения ключей"""
     for element_pronoun in message_split:
         if element_pronoun in ['каждый', 'каждую', 'каждое', 'каждые']:
             # print(element_pronoun)

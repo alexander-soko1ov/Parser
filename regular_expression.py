@@ -44,7 +44,7 @@ text_35 = "Тренировка каждый год"
 #     message = globals()[f'text_{i}']
 #     print(message)
 
-print("О чем мне вам напомнить?")
+print("О чём мне вам напомнить?")
 message = input()
 
 # text1 = re.findall(r'[а-яА-ЯёЁ]', message)
@@ -54,7 +54,7 @@ message = input()
 
 # print(text)
 
-time_ = re.findall('[0-9]?[0-9][:][0-9][0-9]', message)
+time_ = re.findall('[вВ]{1}?[\s][0-9]?[0-9][:][0-9][0-9]', message)
 
 string = list(message.split())
 
