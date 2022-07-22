@@ -5,6 +5,8 @@ from termcolor import colored, cprint
 
 string = 'к 12:01'
 string_split = string.split()
+print(string_split)
+
 
 def digital_time_finding(string_split, hour_k=0, minute_k=0, mask=0):
     """функция работает с датами в цифровом формате 'в 12:01, к 18:45',
@@ -30,11 +32,8 @@ def digital_time_finding(string_split, hour_k=0, minute_k=0, mask=0):
         if hour_k == 1:
             result = hour
         elif minute_k == 1:
-            result = minute
-            # if len(str(minute)) == 1:
-            #     result = '0' + str(minute)
-            # else:
-            #     result = minute
+            result = str(minute).lstrip('0')
+
         if mask == 1:
             result = mask_str_time
 
@@ -43,19 +42,3 @@ def digital_time_finding(string_split, hour_k=0, minute_k=0, mask=0):
 print('часов: ', digital_time_finding(string_split, 1, 0))
 print('минут: ', digital_time_finding(string_split, 0, 1))
 print('маска: ', digital_time_finding(string_split, 0, 0, 1))
-
-
-# after_time = datetime.datetime(year=int(year), month=int(mount_data), day=int(numbers))
-#
-# delta_time = datetime.timedelta(hours=int(hour_str), minutes=int(minutes_str))
-#
-# time = None
-#
-# if each in ['через', 'Через']:
-#     time = datetime_today + delta_time
-#     hour = time.hour
-#     minutes = time.minute
-# elif each in ['к', 'в']:
-#     time = after_time + delta_time
-#     hour = time.hour
-#     minutes = time.minute
