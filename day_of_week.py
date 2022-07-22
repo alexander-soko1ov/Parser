@@ -77,11 +77,11 @@ def day_of_week(string_split, format_data=0):
     year = number.year
     hour = number.hour
     minute_pre_res = number.minute
-    if len(str(minute_pre_res)) == 1:
-        minute = '0' + str(minute_pre_res)
-    else:
-        minute = minute_pre_res
-    pre_result = [day, mount, year, hour, minute]
+    # if len(str(minute_pre_res)) == 1:
+    #     minute = '0' + str(minute_pre_res)
+    # else:
+    #     minute = minute_pre_res
+    pre_result = [day, mount, year]
     if format_data == 0:
         result = number
     elif format_data == 1:
