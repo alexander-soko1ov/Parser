@@ -2,6 +2,7 @@ import datetime
 
 string = 'в среду'
 string_split = string.split()
+print(string_split)
 
 days_of_week_dict = {
     'понедельник': 0,
