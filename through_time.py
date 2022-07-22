@@ -1,7 +1,7 @@
 import datetime
 from termcolor import colored, cprint
 
-string = 'завтра покушать'
+string = 'через 12 минут'
 
 string_split = string.lower().split()
 print(string_split)
