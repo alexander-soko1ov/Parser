@@ -50,7 +50,7 @@ def finding_matches(string_split, dictionary, text=0):
     return data
 
 
-def day_of_week(string_split):
+def day_of_week(string_split, format_data=0):
     """определяет дни недели, возвращает:
     дату в формате листа [день, месяц, год, час, минута]"""
 
@@ -70,7 +70,7 @@ def day_of_week(string_split):
                 day_every = days_of_week_dict[day_of_week] - weekday_today
         # else:
         #     day_of_week = get_key_by_value(weekday_today, days_of_week_dict)
-    number = datetime_today + datetime.timedelta(days=day_every)
+    number = datetime_today + datetime.timedelta(days=day_every, minutes=-40)
     day = number.day
     mount = number.month
     year = number.year
@@ -80,8 +80,14 @@ def day_of_week(string_split):
         minute = '0' + str(minute_pre_res)
     else:
         minute = minute_pre_res
-    day_of_weeks = [day, mount, year, hour, minute]
-    return day_of_weeks
+    pre_result = [day, mount, year, hour, minute]
+    if format_data == 0:
+        result = number
+    elif format_data == 1:
+        result = pre_result
 
+    return result
 
-print(day_of_week(string_split))
+# print(day_of_week(string_split).minute)
+
+print(day_of_week(string_split,1))
