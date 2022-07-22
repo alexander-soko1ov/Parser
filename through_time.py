@@ -1,7 +1,8 @@
 import datetime
 from termcolor import colored, cprint
 
-string = 'Тренировка через день'
+string = 'завтра покушать'
+
 string_split = string.lower().split()
 print(string_split)
 
@@ -102,6 +103,7 @@ def through_time(string_split, dictionary, format_date=0, mask=0):
     weeks = 0
     mask_every = None
     mask_time = None
+    result = None
 
     if (suggestion_function(string_split, dictionary, 1) == 2) or (suggestion_function(string_split, dictionary, 1) == 3):
         element_right = string_split[string_split.index(suggestion_function(string_split, dictionary)) + 1]
@@ -128,6 +130,11 @@ def through_time(string_split, dictionary, format_date=0, mask=0):
             if element_right.isdigit() and len(str(element_right)) in [1, 2]:
                 weeks = int(element_right)
                 mask_time = element_right
+    for element_tomorrow in string_split:
+        if element_tomorrow in ['завтра']:
+            day = 1
+            mask_every = element_tomorrow
+
     number = datetime_today + datetime.timedelta(minutes=minute, hours=hour, days=day, weeks=weeks)
     day = number.day
     mount = number.month
