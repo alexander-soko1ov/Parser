@@ -112,7 +112,9 @@ for i in range(36):
 
     def suggestion_function(string_split, dictionary, number=0):
         """возвращает значение или элемент словаря подходящий к строке,
-        работает с предлогами"""
+        работает с предлогами, возвращает:
+            0 - значение из текста
+            1 - значение ключа из словаря"""
         result = None
         pre_result = None
         pre_result_text = None
@@ -231,9 +233,14 @@ for i in range(36):
             hour = time_str[:2]
             minute = time_str[3:]
 
+    """проверка на месяц, проверка на слово 'число', слова 'минут, часов и т.д."""
     for element_date in message_split:
+
+        """проверка элемент является цифрой или нет, и что стоит после элемента, 
+        если он является цифрой"""
         if element_date.isdigit() and (len(element_date) == 1 or len(element_date) == 2):
             index_element_right = message_split.index(element_date) + 1
+
             if not finding_matches(message_split, dictionary_month, 1) == None:    # проверка на месяц
                 day = element_date
                 mount = finding_matches(message_split, dictionary_month, 1)
@@ -264,10 +271,56 @@ for i in range(36):
                     datetime_minutes = datetime_today + datetime.timedelta(weeks=int(element_date))
                     day = datetime_minutes.day
                     mount = datetime_minutes.month
-            else:
-                pass
 
-    """работа с datetime, получение года, месяца, даты и времени, исходя из изначальных условий"""
+        elif element_date in ['год', 'года', 'лет']:
+            """проверка на слова 'год', 'года', 'лет' и проверка високосный ли сейчас год,
+             прибавление кол-ва лет к нынешнему году"""
+            element_message_split_left = message_split[message_split.index(element_date) - 1]
+            if element_message_split_left.isdigit():
+                day_multiplier = int(element_message_split_left)
+            else:
+                day_multiplier = 1
+            if year % 4 == 0:
+                day_delta = 366 * day_multiplier
+                datetime_minutes = datetime_today + datetime.timedelta(days=int(day_delta))
+                day = datetime_minutes.day
+                year = datetime_minutes.year
+            else:
+                day_delta = 365 * day_multiplier
+                datetime_minutes = datetime_today + datetime.timedelta(days=int(day_delta))
+                day = datetime_minutes.day
+                year = datetime_minutes.year
+
+
+    for element_pronoun in message_split:
+        if element_pronoun in ['каждый', 'каждую', 'каждое', 'каждые']:
+            # print(element_pronoun)
+            cprint(message_split.index(element_pronoun), 'magenta')
+            each_key = 3
+            each = element_pronoun
+            # записать время в переменную повторения в выводе, в формате json
+        elif element_pronoun in ['через']:
+            element_right_eash = message_split[message_split.index(element_pronoun) + 1]
+            cprint(element_right_eash, 'red')
+            each_key = 2
+            each = element_pronoun
+            # просто прибавить время
+
+    # if (suggestion_function(message_split, prefix_dictionary, 1) == 3) or (suggestion_function(message_split, prefix_dictionary, 1) == 2):
+    #     cprint(suggestion_function(message_split, prefix_dictionary, 1), 'red')
+    #     # each = suggestion_function(message_split, prefix_dictionary, 0)
+    #     cprint('каждый или через', 'red')
+        # if (suggestion_function(message_split, prefix_dictionary, 1) == 2) or (suggestion_function(message_split, prefix_dictionary, 1) == 3):
+        #
+        #     index_element_right_eash = message_split.index(each) + 1
+        #     # element_right_eash = message_split[index_element_right_eash]
+        #     cprint(len(message_split), 'cyan')
+        #     cprint(index_element_right_eash, 'magenta')
+    # else:
+    #     eash = None
+
+    """!!!скорее всего буду делать в кажом блоке отдельное прибавление времени!!!
+    работа с datetime, получение года, месяца, даты и времени, исходя из изначальных условий"""
     # number = datetime_today + datetime.timedelta(minutes=int(minutes), hours=int(hour), days=int(day), weeks=int(weeks))
     # year = number.year
     # mount = number.month
@@ -285,6 +338,7 @@ for i in range(36):
         print('число: ', day)
         print('часы: ', hour)
         print('минуты: ', minute)
+        print('год: ', year)
         print('день недели: ', weekday)
         print('месяц: ', mount)
         print('час, месяц, год и.д.: ', datetime_element)
