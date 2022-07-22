@@ -95,6 +95,7 @@ def on_weekends(string_split, dictionary, dictionary_day_of_week, number_date=0,
 
     return result
 
+
 print('Ввод: ', string)
 # print('Сегодня: ', on_weekends)
 print('Уведомление на: ', on_weekends(string_split, week_weekend_dict, days_of_the_week, 0, 0), on_weekends(string_split, week_weekend_dict, days_of_the_week, 1, 0))
