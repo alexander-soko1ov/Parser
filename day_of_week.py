@@ -1,6 +1,6 @@
 import datetime
 
-string = 'в четверг'
+string = 'в среду'
 string_split = string.split()
 
 days_of_week_dict = {
@@ -70,7 +70,7 @@ def day_of_week(string_split, format_data=0):
                 day_every = days_of_week_dict[day_of_week] - weekday_today
         # else:
         #     day_of_week = get_key_by_value(weekday_today, days_of_week_dict)
-    number = datetime_today + datetime.timedelta(days=day_every, minutes=-40)
+    number = datetime_today + datetime.timedelta(days=day_every)
     day = number.day
     mount = number.month
     year = number.year
