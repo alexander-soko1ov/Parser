@@ -134,6 +134,7 @@ for i in range(36):
         status = "Failure"
         message_space = ''
 
+
     print('Часов: ', twenty_four_hours(string_split, time_of_day_dict))
     print('Маска: ', twenty_four_hours(string_split, time_of_day_dict, 1))
 
