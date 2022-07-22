@@ -297,14 +297,22 @@ for i in range(36):
             # print(element_pronoun)
             cprint(message_split.index(element_pronoun), 'magenta')
             each_key = 3
+            cprint(each_key, 'red')
             each = element_pronoun
             # записать время в переменную повторения в выводе, в формате json
         elif element_pronoun in ['через']:
             element_right_eash = message_split[message_split.index(element_pronoun) + 1]
-            cprint(element_right_eash, 'red')
+            cprint(element_right_eash, 'green')
             each_key = 2
+            cprint(each_key, 'red')
             each = element_pronoun
             # просто прибавить время
+        elif element_pronoun in ['в']:
+            element_right_eash = message_split[message_split.index(element_pronoun) + 1]
+            cprint(element_right_eash, 'cyan')
+            each_key = 1
+            cprint(each_key, 'red')
+            each = element_pronoun
 
     # if (suggestion_function(message_split, prefix_dictionary, 1) == 3) or (suggestion_function(message_split, prefix_dictionary, 1) == 2):
     #     cprint(suggestion_function(message_split, prefix_dictionary, 1), 'red')

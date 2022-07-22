@@ -1,6 +1,6 @@
 import datetime
 
-string = 'в воскресенье'
+string = 'в четверг'
 string_split = string.split()
 
 days_of_week_dict = {
@@ -47,19 +47,18 @@ def finding_matches(string_split, dictionary, text=0):
                     data = element
                 else:
                     data = None
-
     return data
 
 
 def day_of_week(string_split):
-    """определение дней недели"""
+    """определяет дни недели, возвращает:
+    дату в формате листа [день, месяц, год, час, минута]"""
 
     datetime_today = datetime.datetime.today()
     weekday_today = datetime_today.weekday()
     day_every = 0
 
     for day_of_week in string_split:
-        """определение дней недели"""
         date_def = finding_matches(string_split, days_of_week_dict, 1)
         if date_def in [0, 1, 2, 3, 4, 5, 6]:
             day_of_week = get_key_by_value(date_def, days_of_week_dict)
@@ -76,9 +75,13 @@ def day_of_week(string_split):
     mount = number.month
     year = number.year
     hour = number.hour
-    minute = number.minute
-    date = [day, mount, year, hour, minute]
-    return date
+    minute_pre_res = number.minute
+    if len(str(minute_pre_res)) == 1:
+        minute = '0' + str(minute_pre_res)
+    else:
+        minute = minute_pre_res
+    day_of_weeks = [day, mount, year, hour, minute]
+    return day_of_weeks
 
 
 print(day_of_week(string_split))
