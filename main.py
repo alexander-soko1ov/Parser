@@ -126,7 +126,7 @@ all_dct = list(time_measure.values())
 
 # PATTERNS
 year_pattern = f'{var("[2-3][0-1][0-9][0-9]", "year")} (года?)?'
-day_week_pattern = f'в {regex_or_var(list(days_of_weeks.values()), "days_of_week")}'
+day_week_pattern = f'во? {regex_or_var(list(days_of_weeks.values()), "days_of_week")}'
 day_pattern = f'{var("[0-9]{1,2}", "day")} {regex_or_var(list(months.values()), "month")}'
 time_pattern = 'в? (?P<hours>\d{1,2}):(?P<minutes>\d{2})'
 
@@ -137,7 +137,9 @@ relative_pattern = f"{regex_or_var(relative_days, 'relative')}"
 part_of_day_pattern = f"{regex_or_var(part_of_day, 'part_of_day')}"
 
 on_pattern = 'на\s(?P<week_weekend>(неделе)|(выходны[хм]))'
-on_next_pattern = f'{regex_or(["на", "в"])} следующ[ие][йм] {regex_or_var(list(time_measure.values()), "next")}'
+# on_next_pattern = f'{regex_or(["на", "в"])} следующ[ие][йм] {regex_or_var(list(time_measure.values()), "next")}'
+
+on_next_pattern = f'{regex_or(["на", "в"])} следующ[ие][йм] {regex_or_var(list(time_measure.values()), "time_range")}'
 
 patterns = [time_pattern, every_pattern, day_week_pattern, day_pattern, year_pattern, relative_pattern,
             part_of_day_pattern, on_pattern, on_next_pattern, after_pattern]
@@ -156,7 +158,7 @@ def relative_def(res, json_output):
         day_add = 2
     else:
         day_add = 0
-    datetime_after = now + datetime.timedelta(days=day_add)
+    datetime_after = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month'])) + datetime.timedelta(days=day_add)
     day = datetime_after.day
     month = datetime_after.month
 
@@ -192,7 +194,7 @@ def week_weekend_def(res, json_output):
         else:
             day_every = weekday_rand - weekday
 
-    number = now + datetime.timedelta(days=day_every)
+    number = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month']), year=int(json_output['DATE']['year']))
     day = number.day
     month = number.month
     year = number.year
@@ -203,45 +205,49 @@ def week_weekend_def(res, json_output):
 
 def through_time_def(res, now, json_output):
     """через время"""
-
-    if ('after' in res) or ('every' in res):
+    if ('after' in res) or ('every' in res) or ('time_range' in res):
+        # if 'next' in res:
         # repeat_after = res["after"] + ' ' + res["amount"] + ' ' + res["time_range"]
-        if res["amount"] == '':
-            if 'every' in res:
-                res["amount"] = 1
-                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + res["time_range"]
-            elif 'after' in res:
-                res["amount"] = 1
+        if "amount" in res:
+            if res["amount"] == '':
+                if 'every' in res:
+                    res["amount"] = 1
+                    json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + res["time_range"]
+                elif ('after' in res):
+                    res["amount"] = 1
+        else:
+            res["amount"] = 1
 
-        if find_dict_match(res["time_range"], time_measure) == 'minutes':
-            datetime_after = now + datetime.timedelta(minutes=int(res["amount"]))
+        if (find_dict_match(res["time_range"], time_measure) == 'minutes'):
+            datetime_after = now.replace(hour=int(json_output['DATE']['hour']), minute=int(json_output['DATE']['minute'])) + datetime.timedelta(minutes=int(res["amount"]))
             json_output['DATE']['minute'] = datetime_after.minute
             json_output['DATE']['hour'] = datetime_after.hour
             if 'every' in res:
                 json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
         elif find_dict_match(res["time_range"], time_measure) == 'hours':
-            datetime_after = now + datetime.timedelta(hours=int(res["amount"]))
+            datetime_after = now.replace(hour=int(json_output['DATE']['hour'])) + datetime.timedelta(hours=int(res["amount"]))
             json_output['DATE']['hour'] = datetime_after.hour
             if 'every' in res:
                 json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
         elif find_dict_match(res["time_range"], time_measure) == 'days':
-            datetime_after = now + datetime.timedelta(days=int(res["amount"]))
+            datetime_after = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month'])) + datetime.timedelta(days=int(res["amount"]))
             json_output['DATE']['day'] = datetime_after.day
             json_output['DATE']['month'] = datetime_after.month
             if 'every' in res:
                 json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
         elif find_dict_match(res["time_range"], time_measure) == 'weeks':
-            datetime_after = now + datetime.timedelta(weeks=int(res["amount"]))
+            datetime_after = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month'])) + datetime.timedelta(weeks=int(res["amount"]))
             json_output['DATE']['day'] = datetime_after.day
             json_output['DATE']['month'] = datetime_after.month
             if 'every' in res:
                 json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
-        elif find_dict_match(res["time_range"], time_measure) == 'months':
-            datetime_after = now + datetime.timedelta(days=30 * int(res["amount"]))
+        elif (find_dict_match(res["time_range"], time_measure) == 'months'):
+
+            datetime_after = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month'])) + datetime.timedelta(days=30 * int(res["amount"]))
             json_output['DATE']['day'] = datetime_after.day
             json_output['DATE']['month'] = datetime_after.month
             if 'every' in res:
@@ -252,10 +258,51 @@ def through_time_def(res, now, json_output):
             if 'every' in res:
                 json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
+        elif find_dict_match(res["time_range"], time_measure) == 'day':
+            datetime_after = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month']), year=int(json_output['DATE']['year'])) + datetime.timedelta(days=30)
+            json_output['DATE']['day'] = int(res["amount"])
+            json_output['DATE']['month'] = datetime_after.month
+            json_output['DATE']['year'] = datetime_after.year
+
+
+def days_of_week_def(res, now, json_output):
+    """функция обрабатывает дни недели"""
+    weekday = now.weekday()
+    day_every = 0
+    if find_dict_match(res["days_of_week"], days_of_weeks) < int(weekday):
+        day_every = find_dict_match(res["days_of_week"], days_of_weeks) - weekday + 7
+    elif find_dict_match(res["days_of_week"], days_of_weeks) == weekday:
+        day_every = 7
+    elif find_dict_match(res["days_of_week"], days_of_weeks) > weekday:
+        if weekday == 5:
+            day_every = 5 - weekday + random.randint(6, 7)
+        else:
+            day_every = find_dict_match(res["days_of_week"], days_of_weeks) - weekday
+    number = now.replace(day=int(json_output['DATE']['day']), month=int(json_output['DATE']['month'])) + datetime.timedelta(days=day_every, weeks=0)
+    json_output['DATE']['day'] = number.day
+    json_output['DATE']['month'] = number.month
+
+
+def part_of_day_def(res, json_output):
+    """функция обрабатывает слова УТРОМ, ДНЁМ, ВЕЧЕРОМ, НОЧЬЮ"""
+    if (res['part_of_day'] == 'с утра') or (res['part_of_day'] == 'утром'):
+        cprint(res['part_of_day'], 'magenta')
+        json_output['DATE']['hour'] = random.randint(6, 11)
+    elif (res['part_of_day'] == 'днём') or (res['part_of_day'] == 'днем'):
+        cprint(res['part_of_day'], 'magenta')
+        json_output['DATE']['hour'] = random.randint(12, 17)
+    elif res['part_of_day'] == 'вечером':
+        cprint(res['part_of_day'], 'magenta')
+        json_output['DATE']['hour'] = random.randint(18, 23)
+    elif res['part_of_day'] == 'ночью':
+        cprint(res['part_of_day'], 'magenta')
+        json_output['DATE']['hour'] = random.randint(0, 5)
+    json_output['DATE']['minute'] = '00'
 
 
 def main_handler(message):
     """главная функция обработки данных полученных парсером"""
+    global json_output
     res, matches = parse_message(message)
 
     # ПОЛУЧЕНИЕ ИТОГОВОГО ТЕКСТА
@@ -265,7 +312,6 @@ def main_handler(message):
     status = SUCCESS
     if task is None:
         status = FAILED
-        json_output = 'Status: FAILED'
     else:
         repeat_every = None
 
@@ -282,9 +328,9 @@ def main_handler(message):
                        'PARAMS': {'repeat_every': repeat_every},
                        'DATE': {'hour': hour, 'minute': minute, 'day': day, 'month': month, 'year': year}}
 
-        # СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА
-        if 'relative' in res:
-            relative_def(res, json_output)
+        # ДЕНЬ НЕДЕЛИ
+        if ('days_of_week' in res):
+            days_of_week_def(res, now, json_output)
 
         # ВРЕМЯ В ЦИФРОВОМ ФОРМАТЕ
         if ('hours' and 'minutes') in res:
@@ -296,18 +342,25 @@ def main_handler(message):
             json_output['DATE']['month'] = find_dict_match(res["month"], months)
             json_output['DATE']['day'] = res['day']
 
+        # СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА
+        if 'relative' in res:
+            relative_def(res, json_output)
+
         # НА ВЫХОДНЫХ, НА НЕДЕЛЕ
         if ('week_weekend' or 'time_range') in res:
             week_weekend_def(res, json_output)
 
         # ЧЕРЕЗ ВРЕМЯ / КАЖДОЕ ВРЕМЯ
-        if ('after' in res) or ('every' in res):
+        if ('after' in res) or ('every' in res) or ('time_range' in res):
             through_time_def(res, now, json_output)
 
-        # КАЖДОЕ ВРЕМЯ
-        if 'every' in res:
-            pass
-            # every_time_def(res, json_output)
+        # ГОД
+        if 'year' in res:
+            json_output['DATE']['year'] = res['year']
+
+        # С УТРА, УТРОМ, ДНЁМ, ВЕЧЕРОМ, НОЧЬЮ
+        if 'part_of_day' in res:
+            part_of_day_def(res, json_output)
 
     return json_output
 
@@ -316,9 +369,6 @@ for message in dataset:
 
     res, matches = parse_message(message)
     task = get_task(message, matches)
-    status = SUCCESS
-    if task is None:
-        status = FAILED
 
     highlight_message(message, matches, end=' ')
 
@@ -326,127 +376,9 @@ for message in dataset:
     print("MESSAGE =", main_handler(message))
 
     now = datetime.datetime.now()
-    text = task
-    repeat = None
     year = now.year
     month = now.month
     day = now.day
     hour = now.hour
     minute = now.minute
     weekday = now.weekday()
-
-
-
-
-    # # ВРЕМЯ В ЦИФРОВОМ ФОРМАТЕ
-    # if ('hours' and 'minutes') in res:
-    #     hour = res['hours']
-    #     minute = res['minutes']
-    #
-    # # ЧИСЛО + МЕСЯЦ
-    # if 'month' in res:
-    #     month = find_dict_match(res["month"], months)
-    #     day = res['day']
-
-    # НА ВЫХОДНЫХ, НА НЕДЕЛЕ
-    # weekday_rand = None
-    # day_every = None
-    # if ('week_weekend' or 'time_range') in res:
-    #     if (res['week_weekend'] == 'неделе') or (res['week_weekend'] == 'выходным') or (res['week_weekend'] == 'выходных'):
-    #         if weekday == 4:
-    #             weekday_rand = random.randint(0, 4)
-    #         else:
-    #             if weekday == 6:
-    #                 number_one = 0
-    #             else:
-    #                 number_one = weekday + 1
-    #             weekday_rand = random.randint(number_one, 4)
-    #     else:
-    #         weekday_rand = random.randint(5, 6)
-    #     if weekday_rand < int(weekday):
-    #         day_every = weekday_rand - weekday + 7
-    #     elif weekday_rand == weekday:
-    #         day_every = 7
-    #     elif weekday_rand > weekday:
-    #         if weekday == 5:
-    #             day_every = 5 - weekday + random.randint(6, 7)
-    #         else:
-    #             day_every = weekday_rand - weekday
-    #     number = now + datetime.timedelta(days=day_every)
-    #     day = number.day
-    #     month = number.month
-    #     year = number.year
-
-    # ДЕНЬ НЕДЕЛИ
-
-
-
-
-    # ЧЕРЕЗ ВРЕМЯ
-
-# def through_time_def(res, now):
-#     repeat_after = None
-#     repeat_every = None
-#     # через время
-#     # if 'after' in res and res["amount"] == '':
-#     #     repeat_after = res["after"] + ' ' + res["time_range"]
-#     if 'after' in res:
-#         repeat_after = res["after"] + ' ' + res["amount"] + ' ' + res["time_range"]
-#         if res["amount"] == '':
-#             res["amount"] = 1
-#         else:
-#             pass
-#
-#         if find_dict_match(res["time_range"], time_measure) == 'minutes':
-#             datetime_after = now + datetime.timedelta(minutes=int(res["amount"]))
-#             minute = datetime_after.minute
-#             hour = datetime_after.hour
-#
-#         elif find_dict_match(res["time_range"], time_measure) == 'hours':
-#             datetime_after = now + datetime.timedelta(hours=int(res["amount"]))
-#             hour = datetime_after.hour
-#
-#         elif find_dict_match(res["time_range"], time_measure) == 'days':
-#             datetime_after = now + datetime.timedelta(days=int(res["amount"]))
-#             day = datetime_after.day
-#
-#         elif find_dict_match(res["time_range"], time_measure) == 'weeks':
-#             datetime_after = now + datetime.timedelta(weeks=int(res["amount"]))
-#             day = datetime_after.day
-#             month = datetime_after.month
-#
-#         elif find_dict_match(res["time_range"], time_measure) == 'months':
-#             datetime_after = now + datetime.timedelta(days=30*int(res["amount"]))
-#             day = datetime_after.day
-#             month = datetime_after.month
-#
-#         elif find_dict_match(res["time_range"], time_measure) == 'years':
-#             year += int(res["amount"])
-#
-#     return json_output
-
-
-
-    # # КАЖДОЕ ВРЕМЯ
-    # if 'every' in res:
-    #     if 'amount' in res and not res["amount"] == '':
-    #         repeat_every = res["every"] + ' ' + res["amount"] + ' ' + res["time_range"]
-    #     elif 'amount' in res and res["amount"] == '':
-    #         repeat_every = res["every"] + ' ' + res["time_range"]
-
-
-    # cprint(repeat_after, 'magenta')
-    # cprint(repeat_every, 'cyan')
-
-    # # ОБЩИЙ ВЫВОД
-    # if status == FAILED:
-    #     task = None
-    #     hour = None
-    #     minute = None
-    #     day = None
-    #     month = None
-    #     year = None
-    #
-    # json_output = "MESSAGE=", {'STATUS': status, 'TEXT': task,
-    #       'PARAMS': {'repeat_every': '', 'repeat_after': repeat_after},
-    #        'DATE': {'hour': hour, 'minute': minute, 'day': day, 'month': month, 'year': year}}
