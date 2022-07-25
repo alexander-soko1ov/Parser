@@ -142,11 +142,11 @@ patterns = [time_pattern, every_pattern, day_week_pattern, day_pattern, year_pat
             part_of_day_pattern, on_pattern, on_next_pattern, after_pattern]
 
 
-with open('dataset.txt', encoding='utf-8') as file:
+with open('../dataset.txt', encoding='utf-8') as file:
     dataset = file.read().splitlines()
 
 
-def relative_def(res, json_output):
+def relative_def(res, now, json_output):
     """функция обработки СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА"""
     relative = res['relative']
     if relative == 'завтра':
@@ -163,7 +163,7 @@ def relative_def(res, json_output):
     json_output['DATE']['month'] = month
 
 
-def week_weekend_def(res, json_output):
+def week_weekend_def(res, now, json_output):
     """функция обработки НА ВЫХОДНЫХ, НА НЕДЕЛЕ"""
     weekday_rand = None
     day_every = None
@@ -299,14 +299,17 @@ def main_handler(message):
     res, matches = parse_message(message)
 
     # ПОЛУЧЕНИЕ ИТОГОВОГО ТЕКСТА
-    task = str(get_task(message, matches)).strip().capitalize()
+    task = str(get_task(message, matches))
+
 
     # ОПРЕДЕЛЕНИЕ СТАТУСА
     status = SUCCESS
     if task is None:
+        cprint('htyjt', 'magenta')
         status = FAILED
     else:
         repeat_every = None
+        cprint('sdasd', 'cyan')
 
         # ВРЕМЯ СЕЙЧАС
         now = datetime.datetime.now()
@@ -337,11 +340,11 @@ def main_handler(message):
 
         # СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА
         if 'relative' in res:
-            relative_def(res, json_output)
+            relative_def(res, now, json_output)
 
         # НА ВЫХОДНЫХ, НА НЕДЕЛЕ
         if ('week_weekend' or 'time_range') in res:
-            week_weekend_def(res, json_output)
+            week_weekend_def(res, now, json_output)
 
         # ЧЕРЕЗ ВРЕМЯ / КАЖДОЕ ВРЕМЯ
         if ('after' in res) or ('every' in res) or ('time_range' in res):
@@ -357,21 +360,13 @@ def main_handler(message):
 
     return json_output
 
+if __name__ == '__main__':
+    for message in dataset:
 
-for message in dataset:
+        res, matches = parse_message(message)
+        task = get_task(message, matches)
 
-    res, matches = parse_message(message)
-    task = get_task(message, matches)
+        highlight_message(message, matches, end=' ')
 
-    highlight_message(message, matches, end=' ')
-
-    print(res, task)
-    print("MESSAGE =", main_handler(message))
-
-    now = datetime.datetime.now()
-    year = now.year
-    month = now.month
-    day = now.day
-    hour = now.hour
-    minute = now.minute
-    weekday = now.weekday()
+        print(res, task)
+        print("MESSAGE =", main_handler(message))
