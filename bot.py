@@ -2,7 +2,7 @@ from datetime import datetime
 
 import telebot
 
-from parser import main_handler, STATUS, FAILED, SUCCESS
+from main import main_handler, STATUS, FAILED, SUCCESS
 
 
 HELP_MSG = """Просто отправь задачу в сообщении!
