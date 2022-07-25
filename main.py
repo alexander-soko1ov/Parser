@@ -3,9 +3,6 @@ from termcolor import colored, cprint
 import datetime
 import re
 
-from termcolor import cprint, colored
-
-
 SUCCESS = "SUCCESS"
 FAILED = "FAILED"
 
@@ -286,16 +283,12 @@ def days_of_week_def(res, now, json_output):
 def part_of_day_def(res, json_output):
     """функция обрабатывает слова УТРОМ, ДНЁМ, ВЕЧЕРОМ, НОЧЬЮ"""
     if (res['part_of_day'] == 'с утра') or (res['part_of_day'] == 'утром'):
-        cprint(res['part_of_day'], 'magenta')
         json_output['DATE']['hour'] = random.randint(6, 11)
     elif (res['part_of_day'] == 'днём') or (res['part_of_day'] == 'днем'):
-        cprint(res['part_of_day'], 'magenta')
         json_output['DATE']['hour'] = random.randint(12, 17)
     elif res['part_of_day'] == 'вечером':
-        cprint(res['part_of_day'], 'magenta')
         json_output['DATE']['hour'] = random.randint(18, 23)
     elif res['part_of_day'] == 'ночью':
-        cprint(res['part_of_day'], 'magenta')
         json_output['DATE']['hour'] = random.randint(0, 5)
     json_output['DATE']['minute'] = '00'
 
