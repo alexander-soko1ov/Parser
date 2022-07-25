@@ -1,225 +1,452 @@
-import re
+import random
 from termcolor import colored, cprint
+import datetime
+import re
 
-text_0 = "Начать собираться в 4:31"
-text_1 = "Проснуться, улыбнуться, почистить зубы и помыться в 07:13"
-text_2 = "Съездить на дачу 17 мая в 16:15"
-text_3 = 'Подписать служебку у начальника 13 декабря 2021 года в 16:15'
-text_4 = "Убраться в квартире через 90 минут"
-text_5 = "Позвонить друзьям через 3 часа"
-text_6 = "Приготовить покушать на 2-3 дня 3 сентября 2022 года в 06:01"
-text_7 = "Перевод локального компьютера в режим гибернации завтра"
-text_8 = "Выключить 13 декабря в 20:17"
-text_9 = "Перевод локального компьютера в режим гибернации через 2 дня"
-text_10 = 'Служебку подписать на питон 12 ноября утром'
-text_11 = 'Служебку подписать на питон в четверг в 20:17'
-text_12 = 'Служебку подписать на питон в среду'
-text_13 = 'Служебку в отдел кадров в среду в 13:13'
-text_14 = "В понедельник уроки"
-text_15 = 'Поскольку все записи имеют один и тот же шаблон, внести данные, которые хотите извлечь из пары скобок 13 декабря 2022 года в 16:15'
-text_16 = "Напомни про гречку через 14 минут"
-text_17 = "Через 50 минут таймер установаить. дерзай"
-text_18 = "Основы_Python_в_четверг_15:00 3 сентября 2022 года"
-text_19 = " Основы_Python_в_четверг_15:00 в среду 15:00 "
-text_20 = "13 1311"
-text_21 = 1231
-text_22 = "Сходить покушать на неделе в 13:13"
-text_23 = "del_qustion_answer*как дела?*норма, как сам?"
-text_24 = "Сходить покушать на неделе"
-text_25 = "В следующем месяце Подписать служебку "
-text_26 = "\d\de23 2\3 3r3556"
-text_27 = "Подписать служебку по выходным"
-text_28 = "Сходить в сауну каждое 28 число"
-text_29 = "Подписать служебку по выходным в 20:19"
-text_30 = "поздравить с др маму через год в 20:18"
-text_31 = "поздравить с др маму через час"
-text_32 = "тренировка каждый час в 20:19"
-text_33 = "Подписать служебку 23 февраля"
-text_34 = "Тренировка каждый понедельник"
-text_35 = "Тренировка каждый день"
-
-for i in range(36):
-    message_space = globals()[f'text_{i}']
-    print(message_space)
-
-    status = None
+from termcolor import cprint, colored
 
 
-    # проверка статуса на условия и сплит строки (проблема с пробелами)
-    if isinstance(message_space, str):
-        message = message_space.lstrip()
-        message_split = re.split(' ', message)
-        status = None
-        # print(message_split[0])
+SUCCESS = "SUCCESS"
+FAILED = "FAILED"
 
-        for element_status_word in message_split[0]:
-            # cprint(element_status_word, 'red')
-            if element_status_word in ['/', '\\', 'd']:
-                status = "Failure"
-                break
-            elif " " in element_status_word:
-                status = "Success"
-            else:
-                status = "Success"
 
-        # for element_status_str in message_split:
-        #     if element_status_str.isdigit() == True:
-        #         print("")
+def regex_or(lst: list):
+    lst = ["(" + el + ")" for el in lst]
+    res = f"({'|'.join(lst)})"
+    return res
 
-        cprint(message_split, 'green')
 
+def regex_or_var(lst: list, var_name: str):
+    lst = ["(" + el + ")" for el in lst]
+    res = f"(?P<{var_name}>{'|'.join(lst)})"
+    return res
+
+
+def var(txt: str, var_name: str):
+    res = f"(?P<{var_name}>{txt})"
+    return res
+
+
+def find_dict_match(exact_value: str, map_dict: dict):
+    """функция получения ключа из словаря по его значению"""
+    for key, regex_value in map_dict.items():
+        m = re.search(regex_value, exact_value)
+        if m:
+            return key
+    return None
+
+
+def parse_message(message: str):
+    res = {}
+    matches = []
+    for pattern in patterns:
+        m = re.search(pattern, message.lower())
+        if m:
+            matches.append(m)
+            res.update(m.groupdict())
+
+    return res, matches
+
+
+def highlight_message(message: str, matches: list, **print_kwargs):
+    if not matches:
+        cprint(message, 'red', **print_kwargs)
+        return
+    matches.sort(key=lambda x: x.start())
+    colored_msg = ''
+    first, last = matches[0], matches[-1]
+    colored_msg += colored(message[0:first.start()], 'red')
+    for i, match in enumerate(matches):
+        colored_msg += colored(message[match.start():match.end()], 'green')
+        if match is not last:
+            colored_msg += colored(message[match.end():matches[i+1].start()], 'red')
+    colored_msg += colored(message[last.end():len(message)], 'red')
+    print(colored_msg, **print_kwargs)
+
+
+def get_task(message: str, matches: list):
+    if not matches:
+        return None
+    matches.sort(key=lambda x: x.start())
+    task_list = []
+    first, last = matches[0], matches[-1]
+
+    task_list.append(message[0:first.start()].strip()) if message[0:first.start()].strip() else None
+    for i, match in enumerate(matches):
+        if match is not last:
+            task_list.append(message[match.end():matches[i + 1].start()].strip()) if message[match.end():matches[i + 1].start()].strip() else None
+
+    task_list.append(message[last.end():len(message)].strip()) if message[last.end():len(message)].strip() else None
+    if not task_list:
+        return None
     else:
-        status = "Failure"
+        return ' '.join(task_list)
 
 
+relative_days = ["сегодня", "завтра", "послезавтра"]
+part_of_day = ["(с )?утра?(ом)?", "дн[её]м", "вечером", "ночью"]
+every = ["кажд[ыоу][йею]", "по"]
+days_of_weeks = {
+    0: "понедельник(ам)?",
+    1: "вторник(ам)?",
+    2: "среду?(ам)?",
+    3: "четверг(ам)?",
+    4: "пятницу?(ам)?",
+    5: "субботу?(ам)?",
+    6: "воскресенье?(ям)?"
+}
+months = {
+    0: "числа",
+    1: "январ[ья]",
+    2: "феврал[ья]",
+    3: "март[а]?",
+    4: "апрел[ья]",
+    5: "ма[йя]",
+    6: "июн[ья]",
+    7: "июл[ья]",
+    8: "август[а]?",
+    9: "сентябр[ья]",
+    10: "октябр[ья]",
+    11: "ноябр[ья]",
+    12: "декабр[ья]",
+}
+time_measure = dict(
+    years=regex_or(["год[ау]?", "лет"]),
+    months="месяц[ае]?",
+    weeks="недел[юие]",
+    days="де?н[яье][й]?",
+    hours="час[а]?(ов)?",
+    minutes="минут[уы]?",
+    # seconds="секунд[уы]?",
+    day='числ[оа]',
+    days_of_weeks=regex_or(list(days_of_weeks.values())),
+    weekend='выходны[емх]'
+)
+all_dct = list(time_measure.values())
+
+# PATTERNS
+year_pattern = f'{var("[2-3][0-1][0-9][0-9]", "year")} (года?)?'
+day_week_pattern = f'в {regex_or_var(list(days_of_weeks.values()), "days_of_week")}'
+day_pattern = f'{var("[0-9]{1,2}", "day")} {regex_or_var(list(months.values()), "month")}'
+time_pattern = 'в? (?P<hours>\d{1,2}):(?P<minutes>\d{2})'
+
+every_pattern = f'{regex_or_var(every, "every")} (?P<amount>\d*)\s?{regex_or_var(all_dct, "time_range")}'
+after_pattern = f'{var("через", "after")} (?P<amount>\d*)\s?{regex_or_var(all_dct, "time_range")}'
+
+relative_pattern = f"{regex_or_var(relative_days, 'relative')}"
+part_of_day_pattern = f"{regex_or_var(part_of_day, 'part_of_day')}"
+
+on_pattern = 'на\s(?P<week_weekend>(неделе)|(выходны[хм]))'
+on_next_pattern = f'{regex_or(["на", "в"])} следующ[ие][йм] {regex_or_var(list(time_measure.values()), "next")}'
+
+patterns = [time_pattern, every_pattern, day_week_pattern, day_pattern, year_pattern, relative_pattern,
+            part_of_day_pattern, on_pattern, on_next_pattern, after_pattern]
 
 
-    # определение года в числовом формате (2021, 2022) и времени в числовом-текстовом формате (90 минут)
-    number = None
-    date_number = None
-    time = None
-    year = None
-    mount = None
-    mask_str_date = None
-    mask_str_time = None
-    element_time = None
+with open('dataset.txt', encoding='utf-8') as file:
+    dataset = file.read().splitlines()
 
-    dictionary_month = {
-        'января': 1,
-        'февраля': 2,
-        'марта': 3,
-        'апреля': 4,
-        'мая': 5,
-        'июня': 6,
-        'июля': 7,
-        'августа': 8,
-        'сентября': 9,
-        'октября': 10,
-        'ноября': 11,
-        'декабря': 12
-    }
 
-    dictionary_time = {
-        'минут': 1,
-        'минуты': 2,
-        'часа': 3,
-        'часов': 4,
-        'число': 5
-    }
+def relative_def(res, json_output):
+    """функция обработки СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА"""
+    relative = res['relative']
+    if relative == 'завтра':
+        day_add = 1
+    elif relative == 'послезавтра':
+        day_add = 2
+    else:
+        day_add = 0
+    datetime_after = now + datetime.timedelta(days=day_add)
+    day = datetime_after.day
+    month = datetime_after.month
 
-    recurring_date = {
-        'через', 'Через', 'каждые', 'Каждые', 'каждое', 'Каждое', 'каждый', 'Каждый',
-        'каждую', 'Каждую'
-    }
+    json_output['DATE']['day'] = day
+    json_output['DATE']['month'] = month
 
-    days_of_the_week = {
-        'понедельник', 'вторник', 'среда', 'четверг', 'пятницу', 'субботу',
-        'воскресенье', 'день', 'дня', 'дней', 'неделю', 'недель', 'месяц', 'год',
-        'час', 'часа', 'часов'
-    }
 
-    for element_1 in message_split:
-        if element_1.isdigit():
-            if (len(element_1) == 2 or len(element_1) == 1):
-                number = element_1
-                # print('Число', number)
-                index = message_split.index(element_1)
-                index_1 = message_split[index + 1]
-                index_2 = message_split[index - 1]
-                # print(index_2)
-                if index_1 in dictionary_month:
-                    mount = dictionary_month[index_1]
-                    date_number = number
-                    mask_str_date = number + " " + index_1
-                    # print(number + " " + index_1)
-                # elif index_1 in 'число':
-                #     date_number = number
-                #     mask_str_date = number + " " + index_1
-                elif index_2 in recurring_date:
-                    if index_1 in dictionary_time:
-                        time = number
-                        mask_str_time = index_2 + " " + number + " " + index_1
+def week_weekend_def(res, json_output):
+    """функция обработки НА ВЫХОДНЫХ, НА НЕДЕЛЕ"""
+    weekday_rand = None
+    day_every = None
+    weekday = datetime.datetime.now().weekday()
 
-            # elif len(element_1) == 4 and element_1 > '2000':
-            #     year = element_1
-            #     print(index_2)
-
-            # else:
-            #     cprint('Нет даты и времени в текстовом формате', 'red')
-
-    for element_year in message_split:
-        # cprint(element_year, 'red')
-        if element_year.isdigit() and len(element_year) == 4 and (2020 <= int(element_year) <= 3000):
-            year = element_year
-            index_element = message_split.index(element_year) + 1
-            # print(index_element)
-            right_element = message_split[index_element]
-            # print(right_element)
-            if right_element in ['год', 'года']:
-                year = element_year + " " + right_element
-                # print(year)
-    # print("год:", year)
-    element_text_data = None
-    each_data = None
-    str_each_data = None
-
-    # определение каждый год, каждый день и т.д.
-    # cprint(len(message_split), 'red')
-    for element_text_data in message_split:
-        if element_text_data in recurring_date:
-            # cprint(element_text_data, 'magenta')
-            index_recurring = message_split.index(element_text_data)
-            each_data = str(message_split[index_recurring + 1])
-            # cprint(each_data, 'magenta')
-            if each_data in days_of_the_week:
-                str_each_data = element_text_data + " " + each_data
-    # print(str_each_data)
-
-            # if recurring_date in days_of_the_week:
-            #     print(element_text_data + " " + recurring_date)
-
-    # определение времени в числовом представлении 16:00, 13:23 и т.д.
-    for index_time, element_time in enumerate(message_split):
-        # print(element_time)
-        if (':' in element_time) and (element_time.replace(':', '').isdigit()) and (len(element_time) in [4, 5]):
-            word_before_element = message_split[index_time - 1]
-            # cprint(word_before_element, 'red')
-            if word_before_element in ['в', 'к']:
-                # cprint("в, к", 'yellow')
-                mask_str_time = word_before_element + ' ' + element_time
-                # cprint(mask_str_time, 'cyan')
-            else:
-                mask_str_time = element_time
-                # cprint(element_time, 'magenta')
+    if res['week_weekend'] == 'неделе':
+        if weekday == 4:
+            weekday_rand = random.randint(0, 4)
         else:
-            element_time = None
+            if weekday == 6:
+                number_one = 0
+            else:
+                number_one = weekday + 1
+            weekday_rand = random.randint(number_one, 4)
+    elif (res['week_weekend'] == 'выходным') or (res['week_weekend'] == 'выходных'):
+        weekday_rand = random.randint(5, 6)
+
+    if weekday_rand < int(weekday):
+        day_every = weekday_rand - weekday + 7
+    elif weekday_rand == weekday:
+        day_every = 7
+    elif weekday_rand > weekday:
+        if weekday == 5:
+            day_every = 5 - weekday + random.randint(6, 7)
+        else:
+            day_every = weekday_rand - weekday
+
+    number = now + datetime.timedelta(days=day_every)
+    day = number.day
+    month = number.month
+    year = number.year
+    json_output['DATE']['day'] = day
+    json_output['DATE']['month'] = month
+    json_output['DATE']['year'] = year
 
 
-    # вывод результата, пока что в столбик, для наглядности
-    result = ' '.join(message_split)
-    replace_time = result.replace(str(mask_str_time), '')
-    replace_date = replace_time.replace(str(mask_str_date), '')
-    replace_year = replace_date.replace(str(year), '')
-    replace_each_data = replace_year.replace(str(str_each_data), '')
-    text = replace_each_data.rstrip().lstrip().capitalize()
+def through_time_def(res, now, json_output):
+    """через время"""
 
-    text_split = text.split()
-    for element_text in text_split:
-        if element_text.isdigit():
-            status = 'Failure'
-    print('Статус: ', status)
+    if ('after' in res) or ('every' in res):
+        # repeat_after = res["after"] + ' ' + res["amount"] + ' ' + res["time_range"]
+        if res["amount"] == '':
+            if 'every' in res:
+                res["amount"] = 1
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + res["time_range"]
+            elif 'after' in res:
+                res["amount"] = 1
 
-    if status == "Success":
-        print('Число: ', date_number)
-        print('Месяц: ', mount)
-        print('Год: ', year)
-        print('Время: ', mask_str_time)
-        print('Datetime (каждый и через):', str_each_data)
-        print('Текст: ', text)
+        if find_dict_match(res["time_range"], time_measure) == 'minutes':
+            datetime_after = now + datetime.timedelta(minutes=int(res["amount"]))
+            json_output['DATE']['minute'] = datetime_after.minute
+            json_output['DATE']['hour'] = datetime_after.hour
+            if 'every' in res:
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
-    print('\n')
+        elif find_dict_match(res["time_range"], time_measure) == 'hours':
+            datetime_after = now + datetime.timedelta(hours=int(res["amount"]))
+            json_output['DATE']['hour'] = datetime_after.hour
+            if 'every' in res:
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
 
-    # print("MESSAGE=",
-    #       {'STATUS': status, 'TEXT': text,
-    #       'PARAMS': {'repeat_always': repeat_always_monday, 'day_of_week': result},
-    #        'DATE': {'hour': hour, 'minute': minute}})
+        elif find_dict_match(res["time_range"], time_measure) == 'days':
+            datetime_after = now + datetime.timedelta(days=int(res["amount"]))
+            json_output['DATE']['day'] = datetime_after.day
+            json_output['DATE']['month'] = datetime_after.month
+            if 'every' in res:
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
+
+        elif find_dict_match(res["time_range"], time_measure) == 'weeks':
+            datetime_after = now + datetime.timedelta(weeks=int(res["amount"]))
+            json_output['DATE']['day'] = datetime_after.day
+            json_output['DATE']['month'] = datetime_after.month
+            if 'every' in res:
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
+
+        elif find_dict_match(res["time_range"], time_measure) == 'months':
+            datetime_after = now + datetime.timedelta(days=30 * int(res["amount"]))
+            json_output['DATE']['day'] = datetime_after.day
+            json_output['DATE']['month'] = datetime_after.month
+            if 'every' in res:
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
+
+        elif find_dict_match(res["time_range"], time_measure) == 'years':
+            json_output['DATE']['year'] += int(res["amount"])
+            if 'every' in res:
+                json_output['PARAMS']['repeat_every'] = res["every"] + ' ' + str(res["amount"]) + ' ' + res["time_range"]
+
+
+
+def main_handler(message):
+    """главная функция обработки данных полученных парсером"""
+    res, matches = parse_message(message)
+
+    # ПОЛУЧЕНИЕ ИТОГОВОГО ТЕКСТА
+    task = str(get_task(message, matches)).strip().capitalize()
+
+    # ОПРЕДЕЛЕНИЕ СТАТУСА
+    status = SUCCESS
+    if task is None:
+        status = FAILED
+        json_output = 'Status: FAILED'
+    else:
+        repeat_every = None
+
+        # ВРЕМЯ СЕЙЧАС
+        now = datetime.datetime.now()
+        hour = now.hour
+        minute = now.minute
+        day = now.day
+        month = now.month
+        year = now.year
+
+        # ИТОГОВЫЙ ВЫВОД
+        json_output = {'STATUS': status, 'TEXT': task,
+                       'PARAMS': {'repeat_every': repeat_every},
+                       'DATE': {'hour': hour, 'minute': minute, 'day': day, 'month': month, 'year': year}}
+
+        # СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА
+        if 'relative' in res:
+            relative_def(res, json_output)
+
+        # ВРЕМЯ В ЦИФРОВОМ ФОРМАТЕ
+        if ('hours' and 'minutes') in res:
+            json_output['DATE']['hour'] = res['hours']
+            json_output['DATE']['minute'] = res['minutes']
+
+        # ЧИСЛО + МЕСЯЦ
+        if 'month' in res:
+            json_output['DATE']['month'] = find_dict_match(res["month"], months)
+            json_output['DATE']['day'] = res['day']
+
+        # НА ВЫХОДНЫХ, НА НЕДЕЛЕ
+        if ('week_weekend' or 'time_range') in res:
+            week_weekend_def(res, json_output)
+
+        # ЧЕРЕЗ ВРЕМЯ / КАЖДОЕ ВРЕМЯ
+        if ('after' in res) or ('every' in res):
+            through_time_def(res, now, json_output)
+
+        # КАЖДОЕ ВРЕМЯ
+        if 'every' in res:
+            pass
+            # every_time_def(res, json_output)
+
+    return json_output
+
+
+for message in dataset:
+
+    res, matches = parse_message(message)
+    task = get_task(message, matches)
+    status = SUCCESS
+    if task is None:
+        status = FAILED
+
+    highlight_message(message, matches, end=' ')
+
+    print(res, task)
+    print("MESSAGE =", main_handler(message))
+
+    now = datetime.datetime.now()
+    text = task
+    repeat = None
+    year = now.year
+    month = now.month
+    day = now.day
+    hour = now.hour
+    minute = now.minute
+    weekday = now.weekday()
+
+
+
+
+    # # ВРЕМЯ В ЦИФРОВОМ ФОРМАТЕ
+    # if ('hours' and 'minutes') in res:
+    #     hour = res['hours']
+    #     minute = res['minutes']
+    #
+    # # ЧИСЛО + МЕСЯЦ
+    # if 'month' in res:
+    #     month = find_dict_match(res["month"], months)
+    #     day = res['day']
+
+    # НА ВЫХОДНЫХ, НА НЕДЕЛЕ
+    # weekday_rand = None
+    # day_every = None
+    # if ('week_weekend' or 'time_range') in res:
+    #     if (res['week_weekend'] == 'неделе') or (res['week_weekend'] == 'выходным') or (res['week_weekend'] == 'выходных'):
+    #         if weekday == 4:
+    #             weekday_rand = random.randint(0, 4)
+    #         else:
+    #             if weekday == 6:
+    #                 number_one = 0
+    #             else:
+    #                 number_one = weekday + 1
+    #             weekday_rand = random.randint(number_one, 4)
+    #     else:
+    #         weekday_rand = random.randint(5, 6)
+    #     if weekday_rand < int(weekday):
+    #         day_every = weekday_rand - weekday + 7
+    #     elif weekday_rand == weekday:
+    #         day_every = 7
+    #     elif weekday_rand > weekday:
+    #         if weekday == 5:
+    #             day_every = 5 - weekday + random.randint(6, 7)
+    #         else:
+    #             day_every = weekday_rand - weekday
+    #     number = now + datetime.timedelta(days=day_every)
+    #     day = number.day
+    #     month = number.month
+    #     year = number.year
+
+    # ДЕНЬ НЕДЕЛИ
+
+
+
+
+    # ЧЕРЕЗ ВРЕМЯ
+
+# def through_time_def(res, now):
+#     repeat_after = None
+#     repeat_every = None
+#     # через время
+#     # if 'after' in res and res["amount"] == '':
+#     #     repeat_after = res["after"] + ' ' + res["time_range"]
+#     if 'after' in res:
+#         repeat_after = res["after"] + ' ' + res["amount"] + ' ' + res["time_range"]
+#         if res["amount"] == '':
+#             res["amount"] = 1
+#         else:
+#             pass
+#
+#         if find_dict_match(res["time_range"], time_measure) == 'minutes':
+#             datetime_after = now + datetime.timedelta(minutes=int(res["amount"]))
+#             minute = datetime_after.minute
+#             hour = datetime_after.hour
+#
+#         elif find_dict_match(res["time_range"], time_measure) == 'hours':
+#             datetime_after = now + datetime.timedelta(hours=int(res["amount"]))
+#             hour = datetime_after.hour
+#
+#         elif find_dict_match(res["time_range"], time_measure) == 'days':
+#             datetime_after = now + datetime.timedelta(days=int(res["amount"]))
+#             day = datetime_after.day
+#
+#         elif find_dict_match(res["time_range"], time_measure) == 'weeks':
+#             datetime_after = now + datetime.timedelta(weeks=int(res["amount"]))
+#             day = datetime_after.day
+#             month = datetime_after.month
+#
+#         elif find_dict_match(res["time_range"], time_measure) == 'months':
+#             datetime_after = now + datetime.timedelta(days=30*int(res["amount"]))
+#             day = datetime_after.day
+#             month = datetime_after.month
+#
+#         elif find_dict_match(res["time_range"], time_measure) == 'years':
+#             year += int(res["amount"])
+#
+#     return json_output
+
+
+
+    # # КАЖДОЕ ВРЕМЯ
+    # if 'every' in res:
+    #     if 'amount' in res and not res["amount"] == '':
+    #         repeat_every = res["every"] + ' ' + res["amount"] + ' ' + res["time_range"]
+    #     elif 'amount' in res and res["amount"] == '':
+    #         repeat_every = res["every"] + ' ' + res["time_range"]
+
+
+    # cprint(repeat_after, 'magenta')
+    # cprint(repeat_every, 'cyan')
+
+    # # ОБЩИЙ ВЫВОД
+    # if status == FAILED:
+    #     task = None
+    #     hour = None
+    #     minute = None
+    #     day = None
+    #     month = None
+    #     year = None
+    #
+    # json_output = "MESSAGE=", {'STATUS': status, 'TEXT': task,
+    #       'PARAMS': {'repeat_every': '', 'repeat_after': repeat_after},
+    #        'DATE': {'hour': hour, 'minute': minute, 'day': day, 'month': month, 'year': year}}
