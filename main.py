@@ -128,6 +128,7 @@ year_pattern = f'{var("[2-3][0-1][0-9][0-9]", "year")} (года?)?'
 day_week_pattern = f'во? {regex_or_var(list(days_of_weeks.values()), "days_of_week")}'
 day_pattern = f'{var("[0-9]{1,2}", "day")} {regex_or_var(list(months.values()), "month")}'
 time_pattern = 'в? (?P<hours>\d{1,2}):(?P<minutes>\d{2})'
+datetime_pattern = '(?P<day>\d{1,2}).(?P<month>\d{2}).(?P<year>\d{4})'
 
 every_pattern = f'{regex_or_var(every, "every")} (?P<amount>\d*)\s?{regex_or_var(all_dct, "time_range")}'
 after_pattern = f'{var("через", "after")} (?P<amount>\d*)\s?{regex_or_var(all_dct, "time_range")}'
@@ -141,7 +142,7 @@ on_pattern = 'на\s(?P<week_weekend>(неделе)|(выходны[хм]))'
 on_next_pattern = f'{regex_or(["на", "в"])} следующ[ие][йм] {regex_or_var(list(time_measure.values()), "time_range")}'
 
 patterns = [time_pattern, every_pattern, day_week_pattern, day_pattern, year_pattern, relative_pattern,
-            part_of_day_pattern, on_pattern, on_next_pattern, after_pattern]
+            part_of_day_pattern, on_pattern, on_next_pattern, after_pattern, datetime_pattern]
 
 
 with open('dataset.txt', encoding='utf-8') as file:
@@ -333,7 +334,14 @@ def main_handler(message):
 
         # ЧИСЛО + МЕСЯЦ
         if 'month' in res:
-            json_output['DATE']['month'] = find_dict_match(res["month"], months)
+            if str(res["month"]).isdigit():
+                if str(res["month"]) != '10':
+                    month_json_out = str(res["month"]).replace('0', '')
+                else:
+                    month_json_out = str(res["month"])
+                json_output['DATE']['month'] = int(month_json_out)
+            else:
+                json_output['DATE']['month'] = find_dict_match(res["month"], months)
             json_output['DATE']['day'] = res['day']
 
         # СЕГОДНЯ, ЗАВТРА, ПОСЛЕЗАВТРА
